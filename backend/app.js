@@ -1,5 +1,6 @@
 import express from "express"
 import authRoutes from './routes/auth.route.js'
+import userRoutes from './routes/user.route.js'
 import dotenv from 'dotenv'
 import connectToDb from "./db/connectToDb.js"
 import cookieParser from "cookie-parser"
@@ -8,12 +9,15 @@ dotenv.config()
 
 app.use(express.json()) //to parse json
 app.use(express.urlencoded({ extended : true})) //to parse form data
-app.use(cookieParser())
-app.use('/api/auth' , authRoutes) //to be able to access cookies through req.cookies.cookiename instead of undefined
+app.use(cookieParser()) //to be able to access cookies through req.cookies.cookiename instead of undefined
 
+//ROUTES
+app.use('/api/auth' , authRoutes) 
+app.use('/users' , userRoutes) 
 app.get('/' , (req , res)=>{
     res.send('Hello World')
 })
+
 
 app.listen(process.env.PORT , async ()=>{
     await connectToDb()

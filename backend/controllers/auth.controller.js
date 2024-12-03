@@ -82,12 +82,7 @@ export const logout = async (req , res)=>{
 
 export const getMe = async (req , res)=>{
     try {
-        const token = req.cookies.token
-        const tokenPayload = await JWT.verify(token , process.env.SECRET_KEY)
-        if (!tokenPayload){
-            return res.status(401).json({error: 'Token is not valid'});
-        }
-        const user = await usersModel.findById(tokenPayload.userId).select('-password')
+        const user = await usersModel.findById(req.user._id).select('-password')
         if (!user){
             return res.status(404).json({message : "User not found" , success : false});
         }
