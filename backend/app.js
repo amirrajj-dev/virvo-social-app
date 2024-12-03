@@ -4,6 +4,8 @@ import userRoutes from './routes/user.route.js'
 import dotenv from 'dotenv'
 import connectToDb from "./db/connectToDb.js"
 import cookieParser from "cookie-parser"
+import postRoutes from './routes/post.route.js'
+
 const app = express()
 dotenv.config()
 
@@ -14,6 +16,7 @@ app.use(cookieParser()) //to be able to access cookies through req.cookies.cooki
 //ROUTES
 app.use('/api/auth' , authRoutes) 
 app.use('/users' , userRoutes) 
+app.use('/api/posts' , postRoutes)
 app.get('/' , (req , res)=>{
     res.send('Hello World')
 })
