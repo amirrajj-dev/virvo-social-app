@@ -1,35 +1,30 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { Routes, Route } from 'react-router-dom';
+import HomePage from './pages/home/HomePage';
+import LoginPage from './pages/auth/LoginPage';
+import SignUpPage from './pages/auth/SignUpPage';
+import NotificationsPage from './pages/notifications/NotificationsPage';
+import ProfilePage from './pages/profile/ProfilePage'
+import SideBar from './components/sidebar/SideBar';
+import SideBarPannel from './components/sidebarpannel/SideBarPannel';
+import {useLocation} from 'react-router-dom'
 
-function App() {
-  const [count, setCount] = useState(0)
-
+const App = () => {
+  const location = useLocation()
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <div className="max-w-6xl mx-auto flex flex-col lg:flex-row">
+      {location.pathname === '/signup' || location.pathname === '/login' ? <></> : <SideBar />}
+      <div className='w-full mt-12 lg:mt-0'>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/signup" element={<SignUpPage />} />
+          <Route path="/notifications" element={<NotificationsPage />} />
+          <Route path='/profiles/:id' element={<ProfilePage/>} />
+        </Routes>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+      {location.pathname === '/signup' || location.pathname === '/login' ? <></> : <SideBarPannel />}
+    </div>
+  );
+};
 
-export default App
+export default App;
