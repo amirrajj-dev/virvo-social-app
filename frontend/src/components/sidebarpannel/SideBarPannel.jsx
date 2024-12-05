@@ -1,11 +1,23 @@
-import { useState } from "react";
-import { USERS_FOR_RIGHT_PANEL } from "../../utils/db/dummy";
+
 import UserToFollowBox from "../userToFollowBox/UserToFollowBox";
 import RightPannelSkeleton from "../skeletons/RightPannelSkeleton";
-
+import {useQuery} from '@tanstack/react-query'
 const SideBarPannel = () => {
-  const [isLoading, setIsLoading] = useState(false);
+  const {data : suggestedUsers , isLoading} = useQuery({
+    queryKey: ['suggestedUsers'],
+    queryFn: async () => {
+      const res = await fetch('/api/users/suggested')
+      const data = await res.json()
+      if (data.error){
+        throw new Error(data.error);
+      }
+      return data.data;
+    }
+  })
 
+  if (suggestedUsers?.length === 0) return (<div className="md:w-64 w-0" ></div>)
+  
+  
   return (
     <div className="border-l border-white w-full lg:w-auto">
       <div className="p-4 bg-gray-800 rounded mt-4 lg:mt-14 ml-2 text-nowrap lg:w-[320px]">
@@ -18,7 +30,7 @@ const SideBarPannel = () => {
             <RightPannelSkeleton />
           </div>
         )}
-        {!isLoading && USERS_FOR_RIGHT_PANEL.map((user) => (
+        {!isLoading && suggestedUsers?.map((user) => (
           <UserToFollowBox key={user._id} {...user} />
         ))}
       </div>

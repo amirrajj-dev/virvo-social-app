@@ -18,7 +18,7 @@ app.use(cookieParser()); //to be able to access cookies through req.cookies.cook
 
 //ROUTES
 app.use("/api/auth", authRoutes);
-app.use("/users", userRoutes);
+app.use("/api/users", userRoutes);
 app.use("/api/posts", postRoutes);
 app.use("/api/notifications", notificationRoutes);
 

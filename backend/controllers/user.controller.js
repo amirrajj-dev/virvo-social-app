@@ -28,6 +28,7 @@ export const getUserProfile = async (req, res) => {
 };
 
 export const getSuggestedUsers = async (req, res) => {
+  
   try {
     const userId = req.user._id;
     const usersFollowedByMe = await usersModel
@@ -57,7 +58,9 @@ export const getSuggestedUsers = async (req, res) => {
         success: true,
         data: suggestedUsers,
       });
-  } catch (error) {}
+  } catch (error) {
+    return res.status(500).json({message : 'error fetching suggested users' , error : error.message})
+  }
 };
 
 export const followUnfollowUser = async (req, res) => {
