@@ -5,15 +5,18 @@ import Post from '../../components/home/Post';
 import PostSkeleton from '../../components/skeletons/PostSkeleton';
 import { POSTS } from '../../utils/db/dummy';
 import ProfileHeaderSkeleton from '../../components/skeletons/ProfileHeaderSkeleton';
+import { useGetMe } from '../../hooks/useGetMe';
 
-const ProfilePage = ({ user, posts, likedPosts }) => {
+const ProfilePage = ({ posts, likedPosts }) => {
+  const {user , error , isError , isPending} = useGetMe()
+  
+  
   const [activeTab, setActiveTab] = useState('posts');
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [profileImg, setProfileImg] = useState('/avatars/boy1.png');
   const [coverImg, setCoverImg] = useState('/avatars/boy1.png');
   const [isProfileImgChanged, setIsProfileImgChanged] = useState(false);
   const [isCoverImgChanged, setIsCoverImgChanged] = useState(false);
-  const [isLoading , setIsLoading] = useState(false);
   
   const handleTabChange = (tab) => {
     setActiveTab(tab);
@@ -53,21 +56,21 @@ const ProfilePage = ({ user, posts, likedPosts }) => {
 
   return (
     <div className="p-4 lg:p-8">
-      {isLoading ? (
+      {isPending ? (
         <>
         <ProfileHeaderSkeleton/>
         </>
       ) : (
         <>
       <div className="relative">
-        <img src={coverImg} alt="Cover" className="w-full h-48 object-cover rounded-lg" />
+        <img src={user?.coverImg || coverImg} alt="Cover" className="w-full h-48 object-cover rounded-lg" />
         <input type="file" accept="image/*" id="cover-upload" hidden onChange={handleCoverImgChange} />
         <label htmlFor="cover-upload" className="absolute top-2 right-2 bg-gray-700 text-white p-2 rounded-full cursor-pointer">
           <FaCamera />
         </label>
       </div>
         <div className="relative w-fit">
-          <img src={profileImg} alt="User Avatar" className="w-24 h-24 rounded-full object-cover" />
+          <img src={user?.profile || profileImg} alt="User Avatar" className="w-24 h-24 rounded-full object-cover" />
           <input type="file" accept="image/*" id="profile-upload" hidden onChange={handleProfileImgChange} />
           <label htmlFor="profile-upload" className="absolute bottom-0 right-0 bg-gray-700 text-white p-2 rounded-full cursor-pointer">
             <FaCamera />
@@ -76,8 +79,8 @@ const ProfilePage = ({ user, posts, likedPosts }) => {
         </div>
       <div className="flex items-center gap-4 mt-4">
         <div>
-          <h2 className="text-2xl font-bold text-gray-800 dark:text-white text-nowrap">joh doe</h2>
-          <span className="text-gray-500 dark:text-gray-400">@johndoe</span>
+          <h2 className="text-2xl font-bold text-gray-800 dark:text-white text-nowrap">{user?.fullName}</h2>
+          <span className="text-gray-500 dark:text-gray-400">@{user?.username}</span>
         </div>
        <div className="flex gap-2.5 w-full justify-end">
        <button onClick={openEditModal} className="btn btn-primary btn-sm text-white">
@@ -96,17 +99,17 @@ const ProfilePage = ({ user, posts, likedPosts }) => {
        </div>
       </div>
       <div className="mt-4">
-        <p className="text-gray-800 dark:text-white">gi im john doe</p>
+        <p className="text-gray-800 dark:text-white">{user?.bio}</p>
         {/* {user.link && <a href={user.link} target="_blank" rel="noopener noreferrer" className="text-blue-500">{user.link}</a>} */}
       </div>
       <div className="flex items-center gap-4 mt-4">
         <div className="flex items-center gap-2">
           <FaUserFriends className="text-gray-800 dark:text-white" />
-          <span className="text-gray-800 dark:text-white">{12} Following</span>
+          <span className="text-gray-800 dark:text-white">{user?.following?.length} Following</span>
         </div>
         <div className="flex items-center gap-2">
           <FaUserPlus className="text-gray-800 dark:text-white" />
-          <span className="text-gray-800 dark:text-white">{10} Followers</span>
+          <span className="text-gray-800 dark:text-white">{user?.followers?.length} Followers</span>
         </div>
       </div>
         

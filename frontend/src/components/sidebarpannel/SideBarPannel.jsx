@@ -8,7 +8,7 @@ const SideBarPannel = () => {
 
   return (
     <div className="border-l border-white w-full lg:w-auto">
-      <div className="p-4 bg-slate-600 rounded mt-4 lg:mt-14 ml-2 text-nowrap lg:w-[260px]">
+      <div className="p-4 bg-gray-800 rounded mt-4 lg:mt-14 ml-2 text-nowrap lg:w-[320px]">
         <h3 className="mb-3 text-white font-bold">Who To Follow</h3>
         {isLoading && (
           <div>
