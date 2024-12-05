@@ -3,7 +3,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'react-hot-toast';
 import { useGetMe } from '../../hooks/useGetMe';
 
-const CreatePost = () => {
+const CreatePost = ({textAreaRef}) => {
   const data = {
     img: '/avatars/boy1.png',
   };
@@ -78,6 +78,7 @@ const CreatePost = () => {
         <div className="w-full">
           <textarea
             value={text}
+            ref={textAreaRef}
             onChange={(e) => setText(e.target.value)}
             placeholder="What's happening?"
             className="w-full h-24 p-2 bg-transparent border border-gray-300 dark:border-gray-700 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-800 dark:text-white"
