@@ -33,7 +33,7 @@ const Post = ({ text, img, user, comments, likes }) => {
           </div>
           {text && <p className="mt-2 text-gray-800 dark:text-white">{text}</p>}
           {img && (
-            <img src={img} alt="Post" className="w-full h-48 object-cover rounded-lg mt-2" />
+            <img src={`http://localhost:5000/posts/${img}`} alt="Post" className="w-full h-48 object-cover rounded-lg mt-2" />
           )}
           <div className="flex items-center gap-4 mt-4">
             <button className="text-blue-500 hover:text-blue-700 transition-all duration-300">

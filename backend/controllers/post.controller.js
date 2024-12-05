@@ -14,37 +14,39 @@ export const getPosts = async (req, res)=>{
     }
 }
 
-export const createPost = async (req , res)=>{
-    try {
-        const {user : userId , text , img} = req.body;
-        
-        if(!userId || !isValidObjectId(userId)){
-            return res.status(400).json({message : "Please fill in all fields u ."});
-        }
-        
-        const user = await usersModel.findById(userId)
-        
-        if (!user){
-            return res.status(400).json({message : "User not found"});
-        }
-        if ((!text && !img)){
-            return res.status(400).json({message : "Please fill in all fields t/i."});
-        }
-        let newPost = {}
-        if (text) newPost.text = text
-        if (img) {
-            //image uploader
-            const bufferImg = Buffer.from(await img.arrayBuffer())
-            const imgName = Date.now() + img
-            await writeFile(path.join(process.cwd(), '/backend/public/posts/' , imgName) , bufferImg)
-            newPost.img = imgName
-        }
-        const post = await postsModel.create({user : user._id , ...newPost})
-        res.status(201).json({message : "Post created successfully", post})
-    } catch (error) {
-        return res.status(500).json({message : 'error creating post' , error : error.message})
+export const createPost = async (req, res) => {
+  try {
+    const { userId, text } = req.body;
+    const img = req.file; // Access the uploaded file
+    
+    if (!userId || !isValidObjectId(userId)) {
+      return res.status(400).json({ message: "Please fill in all fields u." });
     }
-}
+
+    const user = await usersModel.findById(userId);
+
+    if (!user) {
+      return res.status(400).json({ message: "User not found" });
+    }
+
+    if (!text && !img) {
+      return res.status(400).json({ message: "Please fill in all fields t/i." });
+    }
+
+    let newPost = {};
+    if (text) newPost.text = text;
+    if (img) {
+      newPost.img = img.filename; // Store the filename of the uploaded image
+    }
+
+    const post = await postsModel.create({ user: user._id, ...newPost });
+    res.status(201).json({ message: "Post created successfully", post });
+  } catch (error) {
+    return res.status(500).json({ message: 'Error creating post', error: error.message });
+  }
+};
+
+
 
 export const likeUnlikePost = async (req , res)=>{
     try {
