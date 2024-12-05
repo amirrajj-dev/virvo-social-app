@@ -5,8 +5,11 @@ import JWT from 'jsonwebtoken'
 const emailRegex = /[^@ \t\r\n]+@[^@ \t\r\n]+\.[^@ \t\r\n]+/
 
 export const signup = async (req , res)=>{
+    
     try {
         const {username , email , fullName , password} = req.body;
+        
+        
         if (!username || !email || !fullName || !password){
             return res.status(400).json({message : "Please fill all the fields" })
         }
@@ -20,7 +23,7 @@ export const signup = async (req , res)=>{
         const userExist = await usersModel.findOne({
             $or : [{username : username} , {email : email}]
         })
-
+        
         if (userExist){
             return res.status(400).json({message : "User already exist" , success : false});
         }
@@ -43,7 +46,9 @@ export const signup = async (req , res)=>{
 export const login = async (req , res)=>{
     try {
         const {username , password} = req.body;
-
+        
+        
+        
         if (!username || !password){
             return res.status(400).json({message : "Please fill all the fields" , success : false});
         }
