@@ -73,7 +73,7 @@ const HomePage = () => {
       </div>
       <div className="mt-4">
         <CreatePost textAreaRef={textAreaRef} />
-        <div className="overflow-auto max-h-[450px]">
+        <div className="overflow-auto max-h-[470px]">
           {tabValue === "for you" ? (
             isLoadingMyPosts ? (
               [...Array(myPosts?.length)].map((post, index) => (

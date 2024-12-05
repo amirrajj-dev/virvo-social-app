@@ -12,7 +12,7 @@ dotenv.config();
 
 app.use(express.static(process.cwd() + '/backend/public'))
 
-app.use(express.json()); //to parse json
+app.use(express.json({limit : '5mb'})); //to parse json
 app.use(express.urlencoded({ extended: true })); //to parse form data
 app.use(cookieParser()); //to be able to access cookies through req.cookies.cookiename instead of undefined
 
