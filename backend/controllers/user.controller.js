@@ -38,8 +38,7 @@ export const getSuggestedUsers = async (req, res) => {
 
     const users = await usersModel
       .find({
-        _id: { $ne: userId },
-        _id: { $nin: usersFollowedByMe.following },
+        _id: { $nin: [userId, ...usersFollowedByMe.following] }
       })
       .limit(10)
       .lean();
@@ -58,6 +57,7 @@ export const getSuggestedUsers = async (req, res) => {
     return res.status(500).json({ message: 'Error fetching suggested users', error: error.message });
   }
 };
+
 
 
 export const followUnfollowUser = async (req, res) => {
