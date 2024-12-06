@@ -28,40 +28,37 @@ export const getUserProfile = async (req, res) => {
 };
 
 export const getSuggestedUsers = async (req, res) => {
-  
   try {
     const userId = req.user._id;
-    const usersFollowedByMe = await usersModel
-      .findById(userId)
-      .select("following");
+    const usersFollowedByMe = await usersModel.findById(userId).select("following").lean();
+
+    if (!usersFollowedByMe || !usersFollowedByMe.following) {
+      return res.status(404).json({ message: "User or following list not found", success: false });
+    }
+
     const users = await usersModel
       .find({
-        $and: [
-          {
-            _id: { $ne: userId },
-          },
-          {
-            following: { $nin: usersFollowedByMe.following },
-          },
-        ],
+        _id: { $ne: userId },
+        _id: { $nin: usersFollowedByMe.following },
       })
-      .limit(10);
-    const unfollowedUsersByMe = users.filter(
-      (user) => !usersFollowedByMe.following.includes(user._id)
-    );
-    const suggestedUsers = unfollowedUsersByMe.slice(0, 4);
-    suggestedUsers.forEach((user) => (user.password = null));
-    res
-      .status(200)
-      .json({
-        message: "Suggested users fetched successfully",
-        success: true,
-        data: suggestedUsers,
-      });
+      .limit(10)
+      .lean();
+
+    // Randomly pick 4 suggested users if more than 4
+    const shuffledUsers = users.sort(() => 0.5 - Math.random());
+    const suggestedUsers = shuffledUsers.slice(0, 4).map(user => ({ ...user, password: null }));
+
+    res.status(200).json({
+      message: "Suggested users fetched successfully",
+      success: true,
+      data: suggestedUsers,
+    });
   } catch (error) {
-    return res.status(500).json({message : 'error fetching suggested users' , error : error.message})
+    console.error(error);
+    return res.status(500).json({ message: 'Error fetching suggested users', error: error.message });
   }
 };
+
 
 export const followUnfollowUser = async (req, res) => {
   try {

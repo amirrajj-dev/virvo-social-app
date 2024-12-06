@@ -8,7 +8,7 @@ import useDeletePost from "../../hooks/useDeletePost";
 import { useLocation, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { useGetMe } from "../../hooks/useGetMe";
-
+import useFollow from '../../hooks/useFollow'
 const ProfilePage = ({ likedPosts }) => {
   const { username } = useParams();
 
@@ -51,7 +51,7 @@ const ProfilePage = ({ likedPosts }) => {
   const [coverImg, setCoverImg] = useState("/avatars/boy1.png");
   const [isProfileImgChanged, setIsProfileImgChanged] = useState(false);
   const [isCoverImgChanged, setIsCoverImgChanged] = useState(false);
-
+  const {followUnfollow , isLoading} = useFollow()
   const handleTabChange = (tab) => setActiveTab(tab);
 
   const openEditModal = () => setIsEditModalOpen(true);
@@ -149,8 +149,10 @@ const ProfilePage = ({ likedPosts }) => {
                   Edit Profile
                 </button>
               ) : (
-                <button className="btn btn-primary btn-sm text-white">
-                Follow
+                <button className="btn btn-primary btn-sm text-white" onClick={()=>{
+                  followUnfollow(user._id)                  
+                }}>
+                {me.following.includes(user?._id) ? 'unfollow' : 'follow'}
               </button>
               )}
               {isProfileImgChanged && (

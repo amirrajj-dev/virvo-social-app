@@ -24,6 +24,7 @@ const useFollow = () => {
       client.invalidateQueries({ queryKey: ['getMe'] });
       client.invalidateQueries({queryKey : ['getPostsOfUserIFollow']})
       client.invalidateQueries({queryKey : ['notifications']})
+      client.invalidateQueries({queryKey : ['user']})
     },
     onError: (error) => {
       toast.error(error.message);

@@ -1,6 +1,7 @@
-import { FaTrashAlt, FaHeart, FaSave } from "react-icons/fa";
+import { FaTrashAlt, FaHeart, FaRegComment , FaRegHeart , FaSave } from "react-icons/fa";
 import {Link, useLocation} from 'react-router-dom'
 import { useGetMe } from "../../hooks/useGetMe";
+
 const Post = ({ text, _id , img, user, comments, likes , createdAt , tabValue , deletePost }) => {
   //   const { avatar, fullName, username, text, image, createdAt } = post;
   //   const timeAgo = new Date(createdAt).toLocaleString(); // This can be replaced with a library like moment.js for better time formatting
@@ -41,12 +42,18 @@ const Post = ({ text, _id , img, user, comments, likes , createdAt , tabValue , 
           {img && (
             <img src={`http://localhost:5000/posts/${img}`} alt="Post" className="w-full h-48 object-cover rounded-lg mt-2" />
           )}
-          <div className="flex items-center gap-4 mt-4">
-            <button className="text-blue-500 hover:text-blue-700 transition-all duration-300">
-              <FaHeart />
+          <div className="flex items-center justify-between gap-4 mt-4">
+            <button className="text-blue-500 hover:text-blue-700 transition-all duration-300 ">
+              <FaRegHeart className="-translate-y-[px]" />
+              <span>{likes.length}</span>
             </button>
             <button className="text-green-500 hover:text-green-700 transition-all duration-300">
               <FaSave />
+              <span className="opacity-0">0</span>
+            </button>
+            <button className="text-yellow-500 hover:text-yellow-700 transition-all duration-300 ">
+              <FaRegComment className="-translate-y-[px]" />
+              <span>{comments.length}</span>
             </button>
           </div>
         </div>
