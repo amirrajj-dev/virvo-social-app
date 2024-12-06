@@ -3,7 +3,7 @@ import { FaTrashAlt, FaHeart, FaRegComment, FaRegHeart, FaSave } from 'react-ico
 import { Link, useLocation } from 'react-router-dom';
 import { useGetMe } from '../../hooks/useGetMe';
 import CommentModal from '../modals/CommentModal';
-import {useMutation} from '@tanstack/react-query' 
+import {useMutation, useQueryClient} from '@tanstack/react-query' 
 import {toast} from 'react-hot-toast'
 
 const Post = ({ text, _id, img, user, comments, likes, createdAt, tabValue, deletePost, likePost }) => {
@@ -13,7 +13,7 @@ const Post = ({ text, _id, img, user, comments, likes, createdAt, tabValue, dele
   const [postComments , setPostcomments] = useState(comments)
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
-
+const client = useQueryClient()
   const {mutate : addComment , isPending} = useMutation({
     mutationFn: async (commentText) => {
       const res = await fetch(`/api/posts/comment/${_id}` , {
@@ -34,6 +34,7 @@ const Post = ({ text, _id, img, user, comments, likes, createdAt, tabValue, dele
     onSuccess : data=>{
       toast.success(data.message)
       setPostcomments([...postComments , {...data.comment , user : me}])
+      client.invalidateQueries({queryKey : 'notifications'})
     },
     onError : error=>{
       toast.error(error.message)
@@ -87,7 +88,7 @@ const Post = ({ text, _id, img, user, comments, likes, createdAt, tabValue, dele
             </button>
             <button className="text-yellow-500 hover:text-yellow-700 transition-all duration-300" onClick={openModal}>
               <FaRegComment className="-translate-y-[px]" />
-              <span>{comments.length}</span>
+              <span>{postComments.length}</span>
             </button>
           </div>
         </div>
