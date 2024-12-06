@@ -24,8 +24,6 @@ const NotificationsPage = () => {
     queryKey: ["notifications"],
     queryFn: fetchMyNotifications,
   });
-
-  console.log(myNotifications);
   
 
   const { mutate: deleteNotifications } = useMutation({
@@ -68,7 +66,17 @@ const NotificationsPage = () => {
           </>
         );
       case "comment":
-        return <FaComment className="text-blue-500" />;
+        return  (
+          <>
+          <FaComment className="text-blue-500" />
+           <p className="text-gray-800 dark:text-white">
+              <Link to={`/profiles/${notification.from.username}`}>
+                @{notification.from.username}
+              </Link>{" "}
+              {notification.type}ed on your post
+            </p>
+          </>
+        ) ;
       case "follow":
         return (
           <>

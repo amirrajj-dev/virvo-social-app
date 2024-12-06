@@ -107,6 +107,12 @@ export const commentOnPost = async (req , res)=>{
             comment ,
             user : user._id
         }
+        const notification = new notificationModel({
+            to : post.user ,
+            from : user ,
+            type : "comment",
+        })
+        await notification.save()
         post.comments.push(newComment)
         await post.save()
         res.status(201).json({message : "Comment created successfully" , comment : newComment})
