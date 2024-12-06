@@ -31,7 +31,7 @@ router.post("/:id", protectRoute, likeUnlikePost);
 router.post("/comment/:id", protectRoute, commentOnPost);
 router.delete("/:id", protectRoute, deletePost);
 router.get("/likedposts", protectRoute, getLikedPosts);
-router.get("/following", getPostsOfUserWeFollow); //to be able to see posts of the users we follow
+router.get("/following", protectRoute ,  getPostsOfUserWeFollow); //to be able to see posts of the users we follow
 router.get("/user/:id", getUserPosts);
 
 export default router;
