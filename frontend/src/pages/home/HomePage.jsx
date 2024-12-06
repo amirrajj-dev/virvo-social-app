@@ -9,12 +9,13 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { TfiFaceSad } from "react-icons/tfi";
 import useDeletePost from "../../hooks/useDeletePost";
+import useLike from "../../hooks/useLike";
 
 const HomePage = () => {
   const { posts: myPosts, isLoading: isLoadingMyPosts } = useGetMePosts();
   const { posts: suggestedPosts } = useGetPosts(); // For suggested and trending posts
   const {followedUserPosts} = useGetFollowingPosts()
-  
+  const {likeUnlikePost , isPending} = useLike()
   
   const [tabValue, setTabValue] = useState("for you");
   const textAreaRef = useRef(null);
@@ -27,6 +28,10 @@ const HomePage = () => {
       deleteOnePost(postId);
     }
   };
+
+  const handleLikeunlikePost = (postId)=>{
+    likeUnlikePost(postId)
+  }
 
   return (
     <div className="px-4">
@@ -49,11 +54,11 @@ const HomePage = () => {
               ))
             ) : myPosts?.length > 0 ? (
               myPosts?.map((post) => (
-                <Post key={post._id} {...post} tabValue={tabValue} deletePost={deletePost} />
+                <Post key={post._id} {...post} tabValue={tabValue} deletePost={deletePost} likePost={handleLikeunlikePost} />
               ))
             ) : suggestedPosts?.length > 0 ? (
               suggestedPosts?.map((post) => (
-                <Post key={post._id} {...post} tabValue={tabValue} deletePost={deletePost} />
+                <Post key={post._id} {...post} tabValue={tabValue} deletePost={deletePost} likePost={handleLikeunlikePost} />
               ))
             ) : (
               <div className="flex flex-col items-center justify-center py-10">
@@ -72,7 +77,7 @@ const HomePage = () => {
           {tabValue === "following" && (
             followedUserPosts?.length > 0 ? (
               followedUserPosts?.map((post) => (
-                <Post key={post._id} {...post} tabValue={tabValue} deletePost={deletePost} />
+                <Post key={post._id} {...post} tabValue={tabValue} deletePost={deletePost} likePost={handleLikeunlikePost} />
               ))
             ) : (
               <div className="flex flex-col items-center justify-center py-10">

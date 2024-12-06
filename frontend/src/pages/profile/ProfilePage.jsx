@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { FaCamera, FaUserFriends, FaUserPlus } from "react-icons/fa";
 import EditProfileModal from "../../components/modals/EditModal";
 import Post from "../../components/home/Post";
@@ -9,7 +9,9 @@ import { useLocation, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { useGetMe } from "../../hooks/useGetMe";
 import useFollow from '../../hooks/useFollow'
-const ProfilePage = ({ likedPosts }) => {
+import useLike from '../../hooks/useLike'
+import useGetLikedPosts from "../../hooks/useGetLikedPosts";
+const ProfilePage = () => {
   const { username } = useParams();
 
   const fetchUser = async (username) => {
@@ -20,6 +22,10 @@ const ProfilePage = ({ likedPosts }) => {
     return data.data;
   };
 
+  const {likeUnlikePost} = useLike()
+  const {likedPosts , isLoading : isLoadingLikedPosts} = useGetLikedPosts()
+
+  
   const { data: user, isLoading: isLoadingUser } = useQuery({
     queryKey: ["user", username],
     queryFn: () => fetchUser(username),
@@ -80,6 +86,10 @@ const ProfilePage = ({ likedPosts }) => {
     const confirmation = confirm("Are you sure you want to delete this post?");
     if (confirmation) deleteOnePost(postId);
   };
+
+  const handleLikeunlikePost = (postId)=>{
+    likeUnlikePost(postId)
+  }
 
   return (
     <div className="p-4 lg:p-8">
@@ -199,12 +209,14 @@ const ProfilePage = ({ likedPosts }) => {
         >
           Posts
         </button>
-        <button
-          onClick={() => handleTabChange("likes")}
-          className={`tab ${activeTab === "likes" ? "tab-active" : ""}`}
-        >
-          Likes
-        </button>
+       {location.pathname === `/profiles/${me?.username}` && (
+         <button
+         onClick={() => handleTabChange("likes")}
+         className={`tab ${activeTab === "likes" ? "tab-active" : ""}`}
+       >
+         Likes
+       </button>
+       )}
       </div>
       <div className="mt-4 overflow-auto max-h-[470px]">
         {activeTab === "posts" &&
@@ -217,6 +229,7 @@ const ProfilePage = ({ likedPosts }) => {
                 deletePost={() => deletePost(post._id)}
                 onLike={() => {}}
                 onSave={() => {}}
+                likePost={handleLikeunlikePost}
               />
             ))
           ) : isLoadingPosts ? (
@@ -226,19 +239,18 @@ const ProfilePage = ({ likedPosts }) => {
           ))}
         {activeTab === "likes" &&
           (likedPosts?.length > 0 ? (
-            likedPosts.map((post) => (
+            likedPosts?.map((post) => (
               <Post
                 key={post.id}
-                post={post}
-                user={user}
+               {...post}
                 isMyPost={false}
-                onDelete={() => {}}
-                onLike={() => {}}
-                onSave={() => {}}
+               likePost={handleLikeunlikePost}
               />
             ))
           ) : (
-            <PostSkeleton />
+           <p>
+            you dont liked any post🐥
+           </p>
           ))}
       </div>
       <EditProfileModal

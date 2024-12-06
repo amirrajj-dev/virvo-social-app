@@ -73,7 +73,7 @@ const SideBar = () => {
             </Link>
           </li>
           <li>
-            <Link to="/">
+            <Link to={`/profiles/${user?.username}`}>
               <button className="btn btn-neutral glass btn-wide flex items-center gap-2">
                 <FaUser size={18} />
                 Profile

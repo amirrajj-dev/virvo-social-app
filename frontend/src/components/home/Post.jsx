@@ -2,7 +2,7 @@ import { FaTrashAlt, FaHeart, FaRegComment , FaRegHeart , FaSave } from "react-i
 import {Link, useLocation} from 'react-router-dom'
 import { useGetMe } from "../../hooks/useGetMe";
 
-const Post = ({ text, _id , img, user, comments, likes , createdAt , tabValue , deletePost }) => {
+const Post = ({ text, _id , img, user, comments, likes , createdAt , tabValue , deletePost , likePost }) => {
   //   const { avatar, fullName, username, text, image, createdAt } = post;
   //   const timeAgo = new Date(createdAt).toLocaleString(); // This can be replaced with a library like moment.js for better time formatting
   const {user : me} = useGetMe()
@@ -43,8 +43,8 @@ const Post = ({ text, _id , img, user, comments, likes , createdAt , tabValue , 
             <img src={`http://localhost:5000/posts/${img}`} alt="Post" className="w-full h-48 object-cover rounded-lg mt-2" />
           )}
           <div className="flex items-center justify-between gap-4 mt-4">
-            <button className="text-blue-500 hover:text-blue-700 transition-all duration-300 ">
-              <FaRegHeart className="-translate-y-[px]" />
+            <button className="text-blue-500 hover:text-blue-700 transition-all duration-300" onClick={()=>likePost(_id)}>
+              {likes.length > 0 ? <FaHeart/> : <FaRegHeart/>}
               <span>{likes.length}</span>
             </button>
             <button className="text-green-500 hover:text-green-700 transition-all duration-300">

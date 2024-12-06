@@ -70,13 +70,14 @@ export const likeUnlikePost = async (req , res)=>{
             await currentUser.save()
             await post.save()
             // handling like notification to the user which post get liked
-            new notificationModel(
-               {
-                to : post.user,
-                from : currentUser,
-                type : "like",
-               }
-            )
+            const notification = new notificationModel(
+                {
+                 to : post.user,
+                 from : currentUser,
+                 type : "like",
+                }
+             )
+             await notification.save()
             return res.status(200).json({message : "Post liked successfully" , post})
         }
     } catch (error) {
