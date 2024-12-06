@@ -148,15 +148,18 @@ export const getLikedPosts = async (req , res)=>{
 export const getPostsOfUserWeFollow = async (req , res)=>{
     try {
         const currentUser = await usersModel.findById(req.user._id);
+        
         if (!currentUser){
             return res.status(400).json({message : 'unauthorized'})
         }
+        
         const followedUsers = currentUser.following
+        
         // posts of the people we follow
         const followedUsersPosts = await postsModel.find({user : { $in : followedUsers}}).sort({createdAt : -1}).populate('user' , '-password').populate('comments.user' , '-password')
         res.status(200).json({followedUsersPosts})
     } catch (error) {
-        return res.status(500).json({message : 'error getting posts of users we follow'})
+        return res.status(500).json({message : 'error getting posts of users we follow' , error : error.message})
     }
 }
 
