@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { FaTrashAlt, FaComment, FaUserPlus, FaHeart, FaUserMinus, FaBell } from 'react-icons/fa';
 import NotificationSkeleton from '../../components/skeletons/NotificationSkeleton';
 import { useQuery } from '@tanstack/react-query';
+import {Link} from 'react-router-dom'
 
 const NotificationsPage = () => {
   const fetchMyNotifications = async () => {
@@ -30,7 +31,7 @@ const NotificationsPage = () => {
           <>
           <FaUserPlus className="text-green-500" />
           <p className="text-gray-800 dark:text-white">
-            @{notification.from.username} {notification.type}ed you
+            <Link to={`/profiles/${notification.from.username}`}>@{notification.from.username}</Link> {notification.type}ed you
           </p>
           </>
         );
@@ -39,7 +40,7 @@ const NotificationsPage = () => {
           <>
           <FaUserPlus className="text-green-500" />
           <p className="text-gray-800 dark:text-white">
-            you followed @{notification.from.username}
+            you followed <Link to={`/profiles/${notification.from.username}`}>@{notification.from.username}</Link>
           </p>
           </>
         );
@@ -48,7 +49,7 @@ const NotificationsPage = () => {
           <>
           <FaUserMinus className="text-yellow-500" />
           <p className="text-gray-800 dark:text-white">
-            @{notification.from.username} {notification.type}ed you
+            you unfollowed <Link to={`/profiles/${notification.from.username}`}>@{notification.from.username}</Link>
           </p>
           </>
         )
@@ -57,7 +58,7 @@ const NotificationsPage = () => {
           <>
           <FaUserMinus className="text-yellow-500" />
           <p className="text-gray-800 dark:text-white">
-            you unfollowed @{notification.from.username}
+            you unfollowed <Link to={`/profiles/${notification.from.username}`}>@{notification.from.username}</Link>
           </p>
           </>
         );
