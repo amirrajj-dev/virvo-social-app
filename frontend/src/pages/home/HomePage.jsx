@@ -7,6 +7,7 @@ import PostSkeleton from "../../components/skeletons/PostSkeleton";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { TfiFaceSad } from "react-icons/tfi";
+import useDeletePost from "../../hooks/useDeletePost";
 const HomePage = () => {
   const {
     posts: myPosts,
@@ -15,6 +16,7 @@ const HomePage = () => {
     isLoading: isLoadingMyPosts,
   } = useGetMePosts();
   const [tabValue, setTabValue] = useState("for you");
+  const {isLoading , deleteOnePost} = useDeletePost()
   const { posts: allPosts } = useGetPosts();
   const textAreaRef = useRef(null);
   const client = useQueryClient();
@@ -25,28 +27,7 @@ const HomePage = () => {
     }
   };
 
-  const { mutate: deleteOnePost } = useMutation({
-    mutationKey: ["deletePost"],
-    mutationFn: async (postId) => {
-      const res = await fetch(`/api/posts/${postId}`, {
-        method: "DELETE",
-      });
-      const data = await res.json();
-
-      if (data?.error) {
-        throw new Error(data?.error);
-      }
-      return data;
-    },
-    onSuccess: () => {
-      toast.success("post deleted succesfully");
-      client.invalidateQueries({ queryKey: ["myPosts"] });
-      client.invalidateQueries({ queryKey: ["posts"] });
-    },
-    onError: (error) => {
-      toast.error(error.message);
-    },
-  });
+  
   return (
     <div className="px-4 ">
       <div

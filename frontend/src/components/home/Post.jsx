@@ -1,9 +1,12 @@
 import { FaTrashAlt, FaHeart, FaSave } from "react-icons/fa";
-
+import {Link, useLocation} from 'react-router-dom'
+import { useGetMe } from "../../hooks/useGetMe";
 const Post = ({ text, _id , img, user, comments, likes , createdAt , tabValue , deletePost }) => {
   //   const { avatar, fullName, username, text, image, createdAt } = post;
   //   const timeAgo = new Date(createdAt).toLocaleString(); // This can be replaced with a library like moment.js for better time formatting
-
+  const {user : me} = useGetMe()
+  const location = useLocation()
+  
   return (
     <div className="bg-white dark:bg-slate-800 rounded-lg shadow-md p-4 mb-4 transition-all duration-300">
       <div className="flex items-start gap-4">
@@ -14,7 +17,7 @@ const Post = ({ text, _id , img, user, comments, likes , createdAt , tabValue , 
         />
         <div className="w-full">
           <div className="flex items-center justify-between">
-            <div>
+            <Link to={`/profiles/${user.username}`}>
               <h4 className="font-bold text-gray-800 dark:text-white">
                 {user.fullName}
               </h4>
@@ -24,8 +27,8 @@ const Post = ({ text, _id , img, user, comments, likes , createdAt , tabValue , 
               <span className="text-sm text-gray-500 dark:text-gray-400 ml-2">
                 {new Date(createdAt).toLocaleDateString()}
               </span>
-            </div>
-           {tabValue === 'for you' && (
+            </Link>
+           {(tabValue === 'for you' || location.pathname === `/profiles/${user?.username}`) && (
              <button className="text-red-500 hover:text-red-700 transition-all duration-300" onClick={()=>deletePost(_id)}>
              <FaTrashAlt />
            </button>
