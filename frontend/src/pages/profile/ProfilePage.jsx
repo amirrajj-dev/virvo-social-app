@@ -15,11 +15,15 @@ import useUpdateUser from "../../hooks/useUpdateUser";
 const ProfilePage = () => {
   const { username } = useParams();
   const { updateUser, isPending } = useUpdateUser();
+  const [userProfile, setUserProfile] = useState(null);
+  const [userCover, setUserCover] = useState(null);
   const fetchUser = async (username) => {
     const res = await fetch(`/api/users/profile/${username}`, {
       method: "GET",
     });
     const data = await res.json();
+    setUserProfile(data.data.profile);
+    setUserCover(data.data.coverImg);
     return data.data;
   };
 
@@ -46,15 +50,15 @@ const ProfilePage = () => {
     initialData: [],
     retry: 2,
   });
-  
+
   const location = useLocation();
   const { user: me } = useGetMe();
 
   const { deleteOnePost } = useDeletePost();
   const [activeTab, setActiveTab] = useState("posts");
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [profileImg, setProfileImg] = useState('/avatars/boy1.png');
-  const [coverImg, setCoverImg] = useState('/avatars/boy1.png');
+  const [profileImg, setProfileImg] = useState("/avatars/boy1.png");
+  const [coverImg, setCoverImg] = useState("/avatars/boy1.png");
   const [isProfileImgChanged, setIsProfileImgChanged] = useState(false);
   const [isCoverImgChanged, setIsCoverImgChanged] = useState(false);
   const { followUnfollow, isLoading } = useFollow();
@@ -69,6 +73,7 @@ const ProfilePage = () => {
   const handleProfileImgChange = (e) => {
     if (e.target.files && e.target.files[0]) {
       setImg(e.target.files[0]);
+      setUserProfile(null);
       setProfileImg(URL.createObjectURL(e.target.files[0]));
       setIsProfileImgChanged(true);
     }
@@ -77,6 +82,7 @@ const ProfilePage = () => {
   const handleCoverImgChange = (e) => {
     if (e.target.files && e.target.files[0]) {
       setCover(e.target.files[0]);
+      setUserCover(null)
       setCoverImg(URL.createObjectURL(e.target.files[0]));
       setIsCoverImgChanged(true);
     }
@@ -87,7 +93,7 @@ const ProfilePage = () => {
     formData.append("profileImage", img);
     updateUser(formData);
     setIsProfileImgChanged(false);
-    setProfileImg(null)
+    setProfileImg(null);
   };
 
   const handleCoverImgUpdate = () => {
@@ -114,7 +120,11 @@ const ProfilePage = () => {
         <>
           <div className="relative">
             <img
-             src={coverImg && user && !user.coverImg ? coverImg : `http://localhost:5000/coverImgs/${user?.coverImg}`}
+              src={
+                coverImg && user && !userCover
+                  ? coverImg
+                  : `http://localhost:5000/coverImgs/${userCover}`
+              }
               alt="Cover"
               className="w-full h-48 object-cover rounded-lg"
             />
@@ -136,7 +146,11 @@ const ProfilePage = () => {
           </div>
           <div className="relative w-fit">
             <img
-              src={profileImg && user && !user.profile ? profileImg : `http://localhost:5000/profiles/${user?.profile}`}
+              src={
+                profileImg && user && !userProfile
+                  ? profileImg
+                  : `http://localhost:5000/profiles/${userProfile}`
+              }
               alt="User Avatar"
               className="w-24 h-24 rounded-full object-cover"
             />
@@ -169,7 +183,7 @@ const ProfilePage = () => {
               {location.pathname === `/profiles/${me?.username}` ? (
                 <button
                   onClick={openEditModal}
-                  className="btn btn-primary btn-sm text-white"
+                  className="btn btn-primary btn-xs text-white"
                 >
                   Edit Profile
                 </button>
@@ -186,7 +200,7 @@ const ProfilePage = () => {
               {isProfileImgChanged && (
                 <button
                   onClick={handleProfileImgUpdate}
-                  className="btn btn-primary btn-sm text-white"
+                  className="btn btn-primary btn-xs text-white"
                 >
                   Update Profile
                 </button>
@@ -194,9 +208,23 @@ const ProfilePage = () => {
               {isCoverImgChanged && (
                 <button
                   onClick={handleCoverImgUpdate}
-                  className="btn btn-primary btn-sm text-white"
+                  className="btn btn-primary btn-xs text-white"
                 >
                   Update Cover
+                </button>
+              )}
+              {(isProfileImgChanged || isCoverImgChanged) && (
+                <button
+                  onClick={() => {
+                    console.log(user)
+                    setUserProfile(user.profile);
+                    setIsProfileImgChanged(false);
+                    setIsCoverImgChanged(false);
+                    setUserCover(user.coverImg);
+                  }}
+                  className="btn btn-primary btn-xs text-white"
+                >
+                  cancel changes
                 </button>
               )}
             </div>
