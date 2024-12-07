@@ -58,8 +58,8 @@ const ProfilePage = () => {
   const { deleteOnePost } = useDeletePost();
   const [activeTab, setActiveTab] = useState("posts");
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [profileImg, setProfileImg] = useState("/avatars/boy1.png");
-  const [coverImg, setCoverImg] = useState("/avatars/boy1.png");
+  const [profileImg, setProfileImg] = useState("/avatar-placeholder.png");
+  const [coverImg, setCoverImg] = useState("/avatar-placeholder.png");
   const [isProfileImgChanged, setIsProfileImgChanged] = useState(false);
   const [isCoverImgChanged, setIsCoverImgChanged] = useState(false);
   const { followUnfollow, isLoading } = useFollow();
