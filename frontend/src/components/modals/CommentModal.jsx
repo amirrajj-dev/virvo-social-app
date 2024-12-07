@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
+import {Link, Links} from 'react-router-dom'
 import { FaTimes } from 'react-icons/fa';
 
 const CommentModal = ({ isOpen, onClose, onSubmit, comments }) => {
@@ -23,7 +24,7 @@ console.log(comments);
           </div>
           <div className="max-h-60 overflow-y-auto mb-4 space-y-3">
             {comments?.length > 0 ? comments?.map((comment, index) => (
-              <div key={index} className="flex items-start space-x-3 p-2 rounded-lg bg-gray-100 dark:bg-gray-700">
+              <Link to={`/profiles/${comment.user.username}`}  key={index} className="flex items-start space-x-3 p-2 rounded-lg bg-gray-100 dark:bg-gray-700">
                 <img
                   src={comment.user.profile || '/avatars/boy1.png'}
                   alt={comment.user.username}
@@ -33,7 +34,7 @@ console.log(comments);
                   <p className="text-sm font-semibold text-gray-800 dark:text-white">{comment.user.username}</p>
                   <p className="text-sm text-gray-800 dark:text-white">{comment.comment}</p>
                 </div>
-              </div>
+              </Link>
             )) : (
               <p className="text-gray-600 dark:text-gray-400">No comments yet. Be the first to comment!</p>
             )}
