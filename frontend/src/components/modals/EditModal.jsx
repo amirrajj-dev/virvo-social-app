@@ -21,15 +21,17 @@ const EditProfileModal = ({ isOpen, onClose, user }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const formData = new FormData()
-    formData.append('fullName', user.fullName)
-    formData.append('username', user.username)
-    formData.append('email', user.email)
-    formData.append('bio', user.bio)
-    formData.append('link', user.link)
-    formData.append('currentPassword', user.currentPassword)
-    formData.append('newPassword', user.newPassword)
-    updateUser(formData)
+    console.log(formData);
+    
+    const formInfo = new FormData()
+    formInfo.append('fullName', formData.fullName)
+    formInfo.append('username', formData.username)
+    formInfo.append('email', formData.email)
+    formInfo.append('bio', formData.bio)
+    formInfo.append('link', formData.link)
+    formInfo.append('currentPassword', formData.currentPassword)
+    formInfo.append('newPassword', formData.newPassword)
+    updateUser(formInfo)
     
     // Add logic to handle profile update
     onClose();

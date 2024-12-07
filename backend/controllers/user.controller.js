@@ -151,7 +151,8 @@ export const updateUserProfile = async (req, res) => {
       bio,
       link,
     } = req.body;
-
+    console.log(req.body);
+    
     const userId = req.user._id;
     const user = await usersModel.findById(userId);
 
@@ -165,8 +166,10 @@ export const updateUserProfile = async (req, res) => {
 
     let isValidCurrentPassword;
     let hashedPassword = null;
-
+    
     if (currentPassword && newPassword) {
+      console.log('yes');
+      
       isValidCurrentPassword = await bcrypt.compare(currentPassword, user.password);
       if (!isValidCurrentPassword) {
         return res.status(400).json({ message: "Invalid current password" });
