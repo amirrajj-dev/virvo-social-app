@@ -14,7 +14,7 @@ const SideBar = () => {
   const data = {
     username: "john doe",
     fullName: "@johndoe",
-    avatar: "/avatars/boy1.png",
+    avatar: "/avatar-placeholder.png",
   };
 
   // get me

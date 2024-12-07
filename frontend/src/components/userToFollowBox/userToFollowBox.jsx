@@ -10,7 +10,7 @@ const UserToFollowBox = ({ fullName, username, profile , _id }) => {
   return (
     <div className="flex items-center justify-between my-3 bg-white dark:bg-gray-700 p-4 rounded-lg shadow-md">
       <Link to={`/profiles/${username}`} className="flex items-center gap-2">
-        <img src={profile ? `http://localhost:5000/profiles/${profile}` : '/avatars/boy1.png'} className="w-8 h-8 rounded-full object-cover" alt="profile" />
+        <img src={profile ? `http://localhost:5000/profiles/${profile}` : '/avatar-placeholder.png'} className="w-8 h-8 rounded-full object-cover" alt="profile" />
         <div className="flex flex-col">
           <span className="font-bold text-gray-900 dark:text-white">{fullName}</span>
           <span className="text-xs text-gray-500 dark:text-gray-400">@{username}</span>

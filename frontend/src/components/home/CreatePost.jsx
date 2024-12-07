@@ -5,7 +5,7 @@ import { useGetMe } from '../../hooks/useGetMe';
 
 const CreatePost = ({textAreaRef}) => {
   const data = {
-    img: '/avatars/boy1.png',
+    img: '/avatar-placeholder.png',
   };
   const [text, setText] = useState('');
   const [blobImage, setBlobImage] = useState(null);
