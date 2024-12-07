@@ -12,6 +12,7 @@ import useFollow from "../../hooks/useFollow";
 import useLike from "../../hooks/useLike";
 import useGetLikedPosts from "../../hooks/useGetLikedPosts";
 import useUpdateUser from "../../hooks/useUpdateUser";
+import moment from "moment";
 const ProfilePage = () => {
   const { username } = useParams();
   const { updateUser, isPending } = useUpdateUser();
@@ -29,7 +30,7 @@ const ProfilePage = () => {
 
   const { likeUnlikePost } = useLike();
   const { likedPosts, isLoading: isLoadingLikedPosts } = useGetLikedPosts();
-
+  
   const { data: user, isLoading: isLoadingUser } = useQuery({
     queryKey: ["user", username],
     queryFn: () => fetchUser(username),
@@ -112,6 +113,8 @@ const ProfilePage = () => {
     likeUnlikePost(postId);
   };
 
+  //adding member since to ui with moment lib and createdAt field user
+  const memberSince = moment(user?.createdAt).format("DD MMMM YYYY");
   return (
     <div className="p-4 lg:p-8">
       {isLoadingUser ? (
@@ -246,6 +249,7 @@ const ProfilePage = () => {
               </span>
             </div>
           </div>
+          <span className="text-sm mt-1 text-white">🟦Member Since {memberSince}</span>
         </>
       )}
       <div className="border-b border-gray-300 dark:border-gray-700 mt-4">
