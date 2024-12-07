@@ -61,7 +61,7 @@ const Post = ({ text, _id, img, user, comments, likes, createdAt, tabValue, dele
     <div className="bg-white dark:bg-slate-800 rounded-lg shadow-md p-4 mb-4 transition-all duration-300">
       <div className="flex items-start gap-4">
         <img
-          src={user.profile || '/avatars/boy1.png'}
+          src={user.profile ? `http://localhost:5000/profiles/${user.profile}` : '/avatars/boy1.png'}
           alt="User Avatar"
           className="w-12 h-12 rounded-full object-cover"
         />

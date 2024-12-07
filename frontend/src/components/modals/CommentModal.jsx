@@ -4,7 +4,6 @@ import { FaTimes } from 'react-icons/fa';
 
 const CommentModal = ({ isOpen, onClose, onSubmit, comments }) => {
   const [commentText, setCommentText] = useState('');
-console.log(comments);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -26,7 +25,7 @@ console.log(comments);
             {comments?.length > 0 ? comments?.map((comment, index) => (
               <Link to={`/profiles/${comment.user.username}`}  key={index} className="flex items-start space-x-3 p-2 rounded-lg bg-gray-100 dark:bg-gray-700">
                 <img
-                  src={comment.user.profile || '/avatars/boy1.png'}
+                  src={`http://localhost:5000/profiles/${comment.user?.profile}` || '/avatars/boy1.png'}
                   alt={comment.user.username}
                   className="w-10 h-10 rounded-full object-cover"
                 />

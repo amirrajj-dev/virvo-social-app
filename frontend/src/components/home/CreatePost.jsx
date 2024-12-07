@@ -74,7 +74,7 @@ const CreatePost = ({textAreaRef}) => {
   return (
     <div className="bg-white dark:bg-slate-800 rounded-lg shadow-md p-4 mb-4 transition-all duration-300">
       <div className="flex items-start gap-4">
-        <img src={data.img} alt="User Avatar" className="w-12 h-12 rounded-full object-cover" />
+        <img src={user && user.profile ? `http://localhost:5000/profiles/${user?.profile}` : data.img} alt="User Avatar" className="w-12 h-12 rounded-full object-cover" />
         <div className="w-full">
           <textarea
             value={text}
