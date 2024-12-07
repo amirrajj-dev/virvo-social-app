@@ -1,50 +1,61 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { FaTrashAlt, FaHeart, FaRegComment, FaRegHeart, FaSave } from 'react-icons/fa';
 import { Link, useLocation } from 'react-router-dom';
 import { useGetMe } from '../../hooks/useGetMe';
 import CommentModal from '../modals/CommentModal';
-import {useMutation, useQueryClient} from '@tanstack/react-query' 
-import {toast} from 'react-hot-toast'
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'react-hot-toast';
+import moment from 'moment';
 
 const Post = ({ text, _id, img, user, comments, likes, createdAt, tabValue, deletePost, likePost }) => {
   const { user: me } = useGetMe();
   const location = useLocation();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [postComments , setPostcomments] = useState(comments)
+  const [postComments, setPostcomments] = useState(comments);
+  const [displayTime, setDisplayTime] = useState(moment(createdAt).fromNow());
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
-const client = useQueryClient()
-  const {mutate : addComment , isPending} = useMutation({
+  const client = useQueryClient();
+
+  const { mutate: addComment, isPending } = useMutation({
     mutationFn: async (commentText) => {
-      const res = await fetch(`/api/posts/comment/${_id}` , {
+      const res = await fetch(`/api/posts/comment/${_id}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          comment : commentText
+          comment: commentText
         }),
-      })
-      const data = await res.json()
-      if (data?.error){
+      });
+      const data = await res.json();
+      if (data?.error) {
         throw new Error(data.error);
       }
       return data;
     },
-    onSuccess : data=>{
-      toast.success(data.message)
-      setPostcomments([...postComments , {...data.comment , user : me}])
-      client.invalidateQueries({queryKey : 'notifications'})
+    onSuccess: data => {
+      toast.success(data.message);
+      setPostcomments([...postComments, { ...data.comment, user: me }]);
+      client.invalidateQueries({ queryKey: 'notifications' });
     },
-    onError : error=>{
-      toast.error(error.message)
+    onError: error => {
+      toast.error(error.message);
     }
-  })
-
+  });
 
   const handleCommentSubmit = (commentText) => {
-    addComment(commentText)
+    addComment(commentText);
   };
+
+  // Update the display time every minute
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setDisplayTime(moment(createdAt).fromNow());
+    }, 60000);
+
+    return () => clearInterval(interval);
+  }, [createdAt]);
 
   return (
     <div className="bg-white dark:bg-slate-800 rounded-lg shadow-md p-4 mb-4 transition-all duration-300">
@@ -64,7 +75,7 @@ const client = useQueryClient()
                 @{user.username}
               </span>
               <span className="text-sm text-gray-500 dark:text-gray-400 ml-2">
-                {new Date(createdAt).toLocaleDateString()}
+                {displayTime}
               </span>
             </Link>
             {(tabValue === 'for you' || location.pathname === `/profiles/${me?.username}`) && (
