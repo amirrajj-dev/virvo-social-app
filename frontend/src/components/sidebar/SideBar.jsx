@@ -86,7 +86,7 @@ const SideBar = () => {
         <div className="mt-4 w-full flex items-center justify-between">
           <Link to={`/profiles/${user.username}`} className="flex items-center gap-4">
             <img
-              src={user.profile || data.avatar}
+              src={user.profile ? `http://localhost:5000/profiles/${user.profile}` : data.avatar}
               alt="avatar"
               className="w-12 h-12 rounded-full object-cover"
             />

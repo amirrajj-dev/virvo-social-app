@@ -148,12 +148,10 @@ export const updateUserProfile = async (req, res) => {
       currentPassword,
       newPassword,
       email,
-      profile,
-      coverImg,
       bio,
       link,
     } = req.body;
-    
+
     const userId = req.user._id;
     const user = await usersModel.findById(userId);
 
@@ -161,47 +159,49 @@ export const updateUserProfile = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    if (!currentPassword || !newPassword) {
+    if ((currentPassword && !newPassword) || (!currentPassword && newPassword)) {
       return res.status(400).json({ message: "Please enter both current and new password" });
     }
 
-    const isValidCurrentPassword = await bcrypt.compare(currentPassword, user.password);
-    if (!isValidCurrentPassword) {
-      return res.status(400).json({ message: "Invalid current password" });
-    }
+    let isValidCurrentPassword;
+    let hashedPassword = null;
 
-    if (newPassword.length < 6) {
-      return res.status(400).json({ message: "Password must be at least 6 characters" });
-    }
+    if (currentPassword && newPassword) {
+      isValidCurrentPassword = await bcrypt.compare(currentPassword, user.password);
+      if (!isValidCurrentPassword) {
+        return res.status(400).json({ message: "Invalid current password" });
+      }
 
-    const hashedPassword = await bcrypt.hash(newPassword, 12);
+      if (newPassword.length < 6) {
+        return res.status(400).json({ message: "Password must be at least 6 characters" });
+      }
+      hashedPassword = await bcrypt.hash(newPassword, 12);
+    }
 
     // Image uploader
     let profileName = user.profile;
     let coverName = user.coverImg;
 
-    if (profile) {
-      if (user.profile) {
-        const oldProfilePath = path.join(process.cwd(), '/backend/public/profiles/', user.profile);
-        await unlink(oldProfilePath); // Delete the old profile image
+    if (req.files) {
+      if (req.files.profileImage) {
+        if (user.profile) {
+          const oldProfilePath = path.join(process.cwd(), '/backend/public/profiles/', user.profile);
+          await unlink(oldProfilePath); // Delete the old profile image
+        }
+        profileName = req.files.profileImage[0].filename;
       }
-      const imageBuffer = Buffer.from(await profile.arrayBuffer());
-      profileName = Date.now() + profile.name;
-      await writeFile(path.join(process.cwd(), '/backend/public/profiles/', profileName), imageBuffer);
+
+      if (req.files.coverImage) {
+        if (user.coverImg) {
+          const oldCoverPath = path.join(process.cwd(), '/backend/public/coverImgs/', user.coverImg);
+          await unlink(oldCoverPath); // Delete the old cover image
+        }
+        coverName = req.files.coverImage[0].filename;
+      }
     }
 
-    if (coverImg) {
-      if (user.coverImg) {
-        const oldCoverPath = path.join(process.cwd(), '/backend/public/coverImgs/', user.coverImg);
-        await unlink(oldCoverPath); // Delete the old cover image
-      }
-      const coverBuffer = Buffer.from(await coverImg.arrayBuffer());
-      coverName = Date.now() + coverImg.name;
-      await writeFile(path.join(process.cwd(), '/backend/public/coverImgs/', coverName), coverBuffer);
-    }
     // End image uploader
-
-    user.password = hashedPassword;
+    user.password = hashedPassword || user.password;
     user.username = username || user.username;
     user.fullName = fullName || user.fullName;
     user.email = email || user.email;
@@ -215,6 +215,9 @@ export const updateUserProfile = async (req, res) => {
 
     return res.status(200).json({ message: "User profile updated successfully", data: updatedUser, success: true });
   } catch (error) {
+    console.log(error);
     return res.status(500).json({ message: 'Internal server error for updating user', error: error.message });
   }
 };
+
+

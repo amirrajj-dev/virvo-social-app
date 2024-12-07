@@ -8,12 +8,13 @@ import useDeletePost from "../../hooks/useDeletePost";
 import { useLocation, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { useGetMe } from "../../hooks/useGetMe";
-import useFollow from '../../hooks/useFollow'
-import useLike from '../../hooks/useLike'
+import useFollow from "../../hooks/useFollow";
+import useLike from "../../hooks/useLike";
 import useGetLikedPosts from "../../hooks/useGetLikedPosts";
+import useUpdateUser from "../../hooks/useUpdateUser";
 const ProfilePage = () => {
   const { username } = useParams();
-
+  const { updateUser, isPending } = useUpdateUser();
   const fetchUser = async (username) => {
     const res = await fetch(`/api/users/profile/${username}`, {
       method: "GET",
@@ -22,10 +23,9 @@ const ProfilePage = () => {
     return data.data;
   };
 
-  const {likeUnlikePost} = useLike()
-  const {likedPosts , isLoading : isLoadingLikedPosts} = useGetLikedPosts()
+  const { likeUnlikePost } = useLike();
+  const { likedPosts, isLoading: isLoadingLikedPosts } = useGetLikedPosts();
 
-  
   const { data: user, isLoading: isLoadingUser } = useQuery({
     queryKey: ["user", username],
     queryFn: () => fetchUser(username),
@@ -46,18 +46,20 @@ const ProfilePage = () => {
     initialData: [],
     retry: 2,
   });
-
+  
   const location = useLocation();
   const { user: me } = useGetMe();
 
   const { deleteOnePost } = useDeletePost();
   const [activeTab, setActiveTab] = useState("posts");
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [profileImg, setProfileImg] = useState("/avatars/boy1.png");
-  const [coverImg, setCoverImg] = useState("/avatars/boy1.png");
+  const [profileImg, setProfileImg] = useState('/avatars/boy1.png');
+  const [coverImg, setCoverImg] = useState('/avatars/boy1.png');
   const [isProfileImgChanged, setIsProfileImgChanged] = useState(false);
   const [isCoverImgChanged, setIsCoverImgChanged] = useState(false);
-  const {followUnfollow , isLoading} = useFollow()
+  const { followUnfollow, isLoading } = useFollow();
+  const [img, setImg] = useState(null);
+  const [cover, setCover] = useState(null);
   const handleTabChange = (tab) => setActiveTab(tab);
 
   const openEditModal = () => setIsEditModalOpen(true);
@@ -66,6 +68,7 @@ const ProfilePage = () => {
 
   const handleProfileImgChange = (e) => {
     if (e.target.files && e.target.files[0]) {
+      setImg(e.target.files[0]);
       setProfileImg(URL.createObjectURL(e.target.files[0]));
       setIsProfileImgChanged(true);
     }
@@ -73,23 +76,35 @@ const ProfilePage = () => {
 
   const handleCoverImgChange = (e) => {
     if (e.target.files && e.target.files[0]) {
+      setCover(e.target.files[0]);
       setCoverImg(URL.createObjectURL(e.target.files[0]));
       setIsCoverImgChanged(true);
     }
   };
 
-  const handleProfileImgUpdate = () => setIsProfileImgChanged(false);
+  const handleProfileImgUpdate = () => {
+    const formData = new FormData();
+    formData.append("profileImage", img);
+    updateUser(formData);
+    setIsProfileImgChanged(false);
+    setProfileImg(null)
+  };
 
-  const handleCoverImgUpdate = () => setIsCoverImgChanged(false);
+  const handleCoverImgUpdate = () => {
+    const formData = new FormData();
+    formData.append("coverImage", cover);
+    updateUser(formData);
+    setIsCoverImgChanged(false);
+  };
 
   const deletePost = (postId) => {
     const confirmation = confirm("Are you sure you want to delete this post?");
     if (confirmation) deleteOnePost(postId);
   };
 
-  const handleLikeunlikePost = (postId)=>{
-    likeUnlikePost(postId)
-  }
+  const handleLikeunlikePost = (postId) => {
+    likeUnlikePost(postId);
+  };
 
   return (
     <div className="p-4 lg:p-8">
@@ -99,7 +114,7 @@ const ProfilePage = () => {
         <>
           <div className="relative">
             <img
-              src={user?.coverImg || coverImg}
+             src={coverImg && user && !user.coverImg ? coverImg : `http://localhost:5000/coverImgs/${user?.coverImg}`}
               alt="Cover"
               className="w-full h-48 object-cover rounded-lg"
             />
@@ -110,18 +125,18 @@ const ProfilePage = () => {
               hidden
               onChange={handleCoverImgChange}
             />
-            {location.pathname === `/profiles/${me?.username}` && (
+            {location.pathname === `/profiles/${user?.username}` && (
               <label
-              htmlFor="cover-upload"
-              className="absolute top-2 right-2 bg-gray-700 text-white p-2 rounded-full cursor-pointer"
-            >
-              <FaCamera />
-            </label>
+                htmlFor="cover-upload"
+                className="absolute top-2 right-2 bg-gray-700 text-white p-2 rounded-full cursor-pointer"
+              >
+                <FaCamera />
+              </label>
             )}
           </div>
           <div className="relative w-fit">
             <img
-              src={user?.profile || profileImg}
+              src={profileImg && user && !user.profile ? profileImg : `http://localhost:5000/profiles/${user?.profile}`}
               alt="User Avatar"
               className="w-24 h-24 rounded-full object-cover"
             />
@@ -132,14 +147,14 @@ const ProfilePage = () => {
               hidden
               onChange={handleProfileImgChange}
             />
-           {location.pathname === `/profiles/${me?.username}` && (
-             <label
-             htmlFor="profile-upload"
-             className="absolute bottom-0 right-0 bg-gray-700 text-white p-2 rounded-full cursor-pointer"
-           >
-             <FaCamera />
-           </label>
-           )}
+            {location.pathname === `/profiles/${me?.username}` && (
+              <label
+                htmlFor="profile-upload"
+                className="absolute bottom-0 right-0 bg-gray-700 text-white p-2 rounded-full cursor-pointer"
+              >
+                <FaCamera />
+              </label>
+            )}
           </div>
           <div className="flex items-center gap-4 mt-4">
             <div>
@@ -159,11 +174,14 @@ const ProfilePage = () => {
                   Edit Profile
                 </button>
               ) : (
-                <button className="btn btn-primary btn-sm text-white" onClick={()=>{
-                  followUnfollow(user._id)                  
-                }}>
-                {me.following.includes(user?._id) ? 'unfollow' : 'follow'}
-              </button>
+                <button
+                  className="btn btn-primary btn-sm text-white"
+                  onClick={() => {
+                    followUnfollow(user._id);
+                  }}
+                >
+                  {me.following.includes(user?._id) ? "unfollow" : "follow"}
+                </button>
               )}
               {isProfileImgChanged && (
                 <button
@@ -209,14 +227,14 @@ const ProfilePage = () => {
         >
           Posts
         </button>
-       {location.pathname === `/profiles/${me?.username}` && (
-         <button
-         onClick={() => handleTabChange("likes")}
-         className={`tab ${activeTab === "likes" ? "tab-active" : ""}`}
-       >
-         Likes
-       </button>
-       )}
+        {location.pathname === `/profiles/${me?.username}` && (
+          <button
+            onClick={() => handleTabChange("likes")}
+            className={`tab ${activeTab === "likes" ? "tab-active" : ""}`}
+          >
+            Likes
+          </button>
+        )}
       </div>
       <div className="mt-4 overflow-auto max-h-[470px]">
         {activeTab === "posts" &&
@@ -242,15 +260,13 @@ const ProfilePage = () => {
             likedPosts?.map((post) => (
               <Post
                 key={post.id}
-               {...post}
+                {...post}
                 isMyPost={false}
-               likePost={handleLikeunlikePost}
+                likePost={handleLikeunlikePost}
               />
             ))
           ) : (
-           <p>
-            you dont liked any post🐥
-           </p>
+            <p>you dont liked any post🐥</p>
           ))}
       </div>
       <EditProfileModal

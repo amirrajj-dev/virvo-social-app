@@ -1,22 +1,36 @@
 import React, { useState } from 'react';
+import useUpdateUser from '../../hooks/useUpdateUser';
 
 const EditProfileModal = ({ isOpen, onClose, user }) => {
-  // const [formData, setFormData] = useState({
-  //   fullName: user.fullName,
-  //   username: user.username,
-  //   email: user.email,
-  //   bio: user.bio,
-  //   link: user.link,
-  //   currentPassword: '',
-  //   newPassword: ''
-  // });
+  if (!user) return 
+  const [formData, setFormData] = useState({
+    fullName: user.fullName,
+    username: user.username,
+    email: user.email,
+    bio: user.bio,
+    link: user.link,
+    currentPassword: '',
+    newPassword: ''
+  });
 
-  // const handleChange = (e) => {
-  //   setFormData({ ...formData, [e.target.name]: e.target.value });
-  // };
+  const {updateUser , isPending} = useUpdateUser()
+  
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    const formData = new FormData()
+    formData.append('fullName', user.fullName)
+    formData.append('username', user.username)
+    formData.append('email', user.email)
+    formData.append('bio', user.bio)
+    formData.append('link', user.link)
+    formData.append('currentPassword', user.currentPassword)
+    formData.append('newPassword', user.newPassword)
+    updateUser(formData)
+    
     // Add logic to handle profile update
     onClose();
   };
@@ -33,8 +47,8 @@ const EditProfileModal = ({ isOpen, onClose, user }) => {
             <input
               type="text"
               name="fullName"
-              // value={formData.fullName}
-              // onChange={handleChange}
+              value={formData.fullName}
+              onChange={handleChange}
               className="w-full p-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
@@ -43,8 +57,8 @@ const EditProfileModal = ({ isOpen, onClose, user }) => {
             <input
               type="text"
               name="username"
-              // value={formData.username}
-              // onChange={handleChange}
+              value={formData.username}
+              onChange={handleChange}
               className="w-full p-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
@@ -53,8 +67,8 @@ const EditProfileModal = ({ isOpen, onClose, user }) => {
             <input
               type="email"
               name="email"
-              // value={formData.email}
-              // onChange={handleChange}
+              value={formData.email}
+              onChange={handleChange}
               className="w-full p-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
@@ -62,8 +76,8 @@ const EditProfileModal = ({ isOpen, onClose, user }) => {
             <label className="block text-gray-700 dark:text-gray-300">Bio</label>
             <textarea
               name="bio"
-              // value={formData.bio}
-              // onChange={handleChange}
+              value={formData.bio}
+              onChange={handleChange}
               className="w-full p-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
             ></textarea>
           </div>
@@ -72,8 +86,8 @@ const EditProfileModal = ({ isOpen, onClose, user }) => {
             <input
               type="text"
               name="link"
-              // value={formData.link}
-              // onChange={handleChange}
+              value={formData.link}
+              onChange={handleChange}
               className="w-full p-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
@@ -82,8 +96,8 @@ const EditProfileModal = ({ isOpen, onClose, user }) => {
             <input
               type="password"
               name="currentPassword"
-              // value={formData.currentPassword}
-              // onChange={handleChange}
+              value={formData.currentPassword}
+              onChange={handleChange}
               className="w-full p-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
@@ -92,8 +106,8 @@ const EditProfileModal = ({ isOpen, onClose, user }) => {
             <input
               type="password"
               name="newPassword"
-              // value={formData.newPassword}
-              // onChange={handleChange}
+              value={formData.newPassword}
+              onChange={handleChange}
               className="w-full p-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
