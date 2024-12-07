@@ -9,17 +9,12 @@ import toast from "react-hot-toast";
 import { useGetMe } from "../../hooks/useGetMe";
 
 const SideBar = () => {
-  const navigate = useNavigate(); // Initialize navigate hook
+  const navigate = useNavigate();
   const client = useQueryClient();
-  const data = {
-    username: "john doe",
-    fullName: "@johndoe",
-    avatar: "/avatar-placeholder.png",
-  };
 
   // get me
   const { error, isError, isLoading, user } = useGetMe();
-  
+
   // logout
   const { mutate: logout } = useMutation({
     mutationKey: ["logout"],
@@ -38,43 +33,40 @@ const SideBar = () => {
     onSuccess: (data) => {
       toast.success(data.message);
       client.invalidateQueries({ queryKey: ['getMe'] }).then(() => {
-        console.log('yes');
-        
         navigate('/login');
       });
-      navigate('/login')
     },
     onError: (error) => {
-      toast.error(error);
+      toast.error(error.message);
     },
   });
 
   return (
-    <div className="flex flex-col justify-between h-screen w-full lg:w-auto p-4 lg:pr-14 pb-6 border-r border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-lg">
+    <div className="flex flex-col justify-between lg:h-screen w-full lg:w-auto p-4 lg:pr-14 pb-6 border-r border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-lg">
       <div>
-        <div className="mb-6">
-          <VirvoLogo />
+        <div className="mb-6 text-center flex justify-center lg:block">
+          <VirvoLogo className="text-primary text-4xl" />
         </div>
-        <ul className="space-y-4">
+        <ul className="space-y-6">
           <li>
-            <Link to="/">
-              <button className="btn btn-neutral glass btn-wide flex items-center gap-2">
+            <Link to="/" className="group">
+              <button className="btn btn-neutral  w-full lg:w-72 flex items-center gap-2 transition duration-300 hover:bg-primary hover:text-white transform hover:scale-105">
                 <FaHome size={18} />
                 Home
               </button>
             </Link>
           </li>
           <li>
-            <Link to="/notifications">
-              <button className="btn btn-neutral glass btn-wide flex items-center gap-2">
+            <Link to="/notifications" className="group">
+              <button className="btn btn-neutral w-full flex items-center gap-2 transition duration-300 hover:bg-primary hover:text-white transform hover:scale-105">
                 <IoMdNotifications size={18} />
                 Notifications
               </button>
             </Link>
           </li>
           <li>
-            <Link to={`/profiles/${user?.username}`}>
-              <button className="btn btn-neutral glass btn-wide flex items-center gap-2">
+            <Link to={`/profiles/${user?.username}`} className="group">
+              <button className="btn btn-neutral w-full flex items-center gap-2 transition duration-300 hover:bg-primary hover:text-white transform hover:scale-105">
                 <FaUser size={18} />
                 Profile
               </button>
@@ -83,45 +75,43 @@ const SideBar = () => {
         </ul>
       </div>
       {user && !isError ? (
-        <div className="mt-4 w-full flex items-center justify-between">
+        <div className="mt-4 w-full flex items-center justify-between bg-gray-100 dark:bg-slate-900/70 p-4 rounded-lg shadow-lg transition duration-300">
           <Link to={`/profiles/${user.username}`} className="flex items-center gap-4">
             <img
-              src={user.profile ? `http://localhost:5000/profiles/${user.profile}` : data.avatar}
+              src={user.profile ? `http://localhost:5000/profiles/${user.profile}` : '/avatar-placeholder.png'}
               alt="avatar"
-              className="w-12 h-12 rounded-full object-cover"
+              className="w-12 h-12 rounded-full object-cover border-2 border-primary shadow-md"
             />
             <div className="flex flex-col">
               <span className="text-gray-900 dark:text-white font-bold">
                 {user?.fullName}
               </span>
               <span className="text-gray-600 dark:text-gray-400">
-                {user?.username}
+                @{user?.username}
               </span>
             </div>
           </Link>
-          <div className="mt-4 flex items-center justify-end">
-            <button
-              className="text-red-500 hover:text-red-700 transition-all duration-300"
-              onClick={() => {
-                const isConfirm = confirm('Are you sure?');
-                if (isConfirm) {
-                  logout();
-                }
-              }}
-            >
-              <IoLogOutOutline size={24} />
-            </button>
-          </div>
+          <button
+            className="text-red-500 hover:text-red-700 transition duration-300 transform hover:scale-110"
+            onClick={() => {
+              const isConfirm = confirm('Are you sure?');
+              if (isConfirm) {
+                logout();
+              }
+            }}
+          >
+            <IoLogOutOutline size={24} />
+          </button>
         </div>
       ) : (
         <div className="mt-4 w-full text-center">
           <Link to="/login">
-            <button className="btn btn-neutral glass btn-wide mb-2">
+            <button className="btn btn-neutral glass btn-wide mb-2 transition duration-300 hover:bg-primary hover:text-white">
               Login
             </button>
           </Link>
           <Link to="/signup">
-            <button className="btn btn-neutral glass btn-wide">Sign Up</button>
+            <button className="btn btn-neutral glass btn-wide transition duration-300 hover:bg-primary hover:text-white">Sign Up</button>
           </Link>
         </div>
       )}

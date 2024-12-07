@@ -40,7 +40,7 @@ const EditProfileModal = ({ isOpen, onClose, user }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 backdrop-blur-sm">
       <div className="bg-white dark:bg-slate-800 rounded-lg shadow-lg p-6 w-full max-w-md">
         <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-4">Edit Profile</h2>
         <form onSubmit={handleSubmit}>
