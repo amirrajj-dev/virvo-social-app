@@ -1,26 +1,23 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import CreatePost from "../../components/home/CreatePost";
 import Post from "../../components/home/Post";
 import useGetMePosts from "../../hooks/useGetMePosts";
 import useGetPosts from "../../hooks/useGetPosts";
 import useGetFollowingPosts from "../../hooks/useGetFollowingPosts";
 import PostSkeleton from "../../components/skeletons/PostSkeleton";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import toast from "react-hot-toast";
 import { TfiFaceSad } from "react-icons/tfi";
 import useDeletePost from "../../hooks/useDeletePost";
 import useLike from "../../hooks/useLike";
 
 const HomePage = () => {
   const { posts: myPosts, isLoading: isLoadingMyPosts } = useGetMePosts();
-  const { posts: suggestedPosts } = useGetPosts(); // For suggested and trending posts
-  const {followedUserPosts} = useGetFollowingPosts()
-  const {likeUnlikePost , isPending} = useLike()
+  const { posts, error, isFetching, fetchNextPage, hasNextPage, isFetchingNextPage } = useGetPosts(); // Infinite query for suggested posts
+  const { followedUserPosts, isLoading: isLoadingFollowingPosts } = useGetFollowingPosts(); // Infinite query for followed user posts
+  const { likeUnlikePost, isPending } = useLike();
   
   const [tabValue, setTabValue] = useState("for you");
   const textAreaRef = useRef(null);
   const { isLoading, deleteOnePost } = useDeletePost();
-  const client = useQueryClient();
 
   const deletePost = (postId) => {
     const confirmDelete = confirm("Are you sure about this?");
@@ -29,65 +26,81 @@ const HomePage = () => {
     }
   };
 
-  const handleLikeunlikePost = (postId)=>{
-    likeUnlikePost(postId)
-  }
+  const handleLikeunlikePost = (postId) => {
+    likeUnlikePost(postId);
+  };
+
+  const loadMorePosts = () => {
+    if (hasNextPage) {
+      fetchNextPage();
+    }
+  };
+
+  const handleScroll = (e) => {
+    if (e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight) {
+      loadMorePosts();
+    }
+  };
 
   return (
-    <div className="px-4">
-      <div role="tablist" className="flex items-center justify-between w-full border-b border-white tabs tabs-bordered">
-        <a role="tab" className={`tab ${tabValue === "for you" ? "tab-active" : null}`} onClick={() => setTabValue("for you")}>
+    <div className="px-4 sm:px-6 lg:px-8">
+      <div role="tablist" className="flex items-center justify-between w-full border-b border-base-300 tabs tabs-boxed">
+        <a role="tab" className={`tab ${tabValue === "for you" ? "tab-active" : ""}`} onClick={() => setTabValue("for you")}>
           For You
         </a>
-        <a role="tab" className={`tab ${tabValue === "following" ? "tab-active" : null}`} onClick={() => setTabValue("following")}>
+        <a role="tab" className={`tab ${tabValue === "following" ? "tab-active" : ""}`} onClick={() => setTabValue("following")}>
           Following
         </a>
       </div>
       <div role="tabpanel" className="tab-content p-4">Tab content 1</div>
       <div className="mt-4">
         <CreatePost textAreaRef={textAreaRef} />
-        <div className="overflow-auto max-h-[470px]">
+        <div className="overflow-auto max-h-[470px] scrollbar" onScroll={handleScroll}>
           {tabValue === "for you" ? (
-            isLoadingMyPosts ? (
-              [...Array(myPosts?.length)].map((post, index) => (
-                <PostSkeleton key={index + 1} />
+            isLoading ? (
+              [...Array(5)].map((_, index) => (
+                <PostSkeleton key={index} />
               ))
-            ) : myPosts?.length > 0 ? (
-              myPosts?.map((post) => (
-                <Post key={post._id} {...post} tabValue={tabValue} deletePost={deletePost} likePost={handleLikeunlikePost} />
-              ))
-            ) : suggestedPosts?.length > 0 ? (
-              suggestedPosts?.map((post) => (
-                <Post key={post._id} {...post} tabValue={tabValue} deletePost={deletePost} likePost={handleLikeunlikePost} />
+            ) : posts?.pages?.length > 0 ? (
+              posts.pages.map((page, pageIndex) => (
+                <div key={pageIndex}>
+                  {page.posts.map((post, postIndex) => (
+                    <Post key={`${pageIndex}-${postIndex}`} {...post} tabValue={tabValue} deletePost={deletePost} likePost={handleLikeunlikePost} />
+                  ))}
+                </div>
               ))
             ) : (
               <div className="flex flex-col items-center justify-center py-10">
-                <TfiFaceSad size={76} className="mb-4" />
-                <h2 className="text-2xl font-semibold text-gray-800 dark:text-white mb-2">No Posts Yet</h2>
-                <p className="text-gray-600 dark:text-gray-400 mb-4">It looks like there are no posts here yet. Why not create your first post and share your thoughts?</p>
-                <button className="bg-gradient-to-r from-cyan-400 to-blue-500 text-white px-4 py-2 rounded-lg shadow-lg hover:from-cyan-500 hover:to-blue-600 transition-all duration-300" onClick={() => textAreaRef.current.focus()}>
+                <TfiFaceSad size={76} className="mb-4 text-base-content" />
+                <h2 className="text-2xl font-semibold text-base-content mb-2">No Posts Yet</h2>
+                <p className="text-base-content mb-4">It looks like there are no posts here yet. Why not create your first post and share your thoughts?</p>
+                <button className="btn btn-primary" onClick={() => textAreaRef.current.focus()}>
                   Create Post
                 </button>
               </div>
             )
           ) : (
-            <></>
-          )}
-
-          {tabValue === "following" && (
-            followedUserPosts?.length > 0 ? (
-              followedUserPosts?.map((post) => (
+            isLoadingFollowingPosts ? (
+              [...Array(5)].map((_, index) => (
+                <PostSkeleton key={index} />
+              ))
+            ) : followedUserPosts?.length > 0 ? (
+              followedUserPosts.map((post) => (
                 <Post key={post._id} {...post} tabValue={tabValue} deletePost={deletePost} likePost={handleLikeunlikePost} />
               ))
             ) : (
               <div className="flex flex-col items-center justify-center py-10">
-                <TfiFaceSad size={76} className="mb-4" />
-                <h2 className="text-2xl font-semibold text-gray-800 dark:text-white mb-2">No Posts Yet</h2>
-                <p className="text-gray-600 dark:text-gray-400 mb-4">It looks like there are no posts from the users you follow yet.</p>
+                <TfiFaceSad size={76} className="mb-4 text-base-content" />
+                <h2 className="text-2xl font-semibold text-base-content mb-2">No Posts Yet</h2>
+                <p className="text-base-content mb-4">It looks like there are no posts from the users you follow yet.</p>
               </div>
             )
           )}
+          {isFetchingNextPage && <PostSkeleton />}
         </div>
+        <button onClick={loadMorePosts} disabled={!hasNextPage || isFetchingNextPage} className="btn btn-primary btn-block mt-4">
+          {isFetchingNextPage ? 'Loading more...' : hasNextPage ? 'Load More' : 'No More Posts'}
+        </button>
       </div>
     </div>
   );

@@ -6,15 +6,18 @@ import { MdMailOutline } from "react-icons/md";
 import { Link, useNavigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import toast from "react-hot-toast";
+
 const SignUpPage = () => {
-  const [showPassowrd, setShowPassword] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   let [formData, setFormData] = useState({
     fullName: "",
     email: "",
     password: "",
     username: "",
   });
+
   const navigate = useNavigate();
+
   const handleFormDatachange = (changes) => {
     setFormData({ ...formData, ...changes });
   };
@@ -24,7 +27,7 @@ const SignUpPage = () => {
     signup(formData);
   };
 
-  const { mutate : signup , isError, isPending, error } = useMutation({
+  const { mutate: signup, isError, isPending, error } = useMutation({
     mutationFn: async ({ fullName, email, password, username }) => {
       try {
         const res = await fetch("/api/auth/signup", {
@@ -61,7 +64,7 @@ const SignUpPage = () => {
   });
 
   return (
-    <div className="h-screen flex items-center justify-center gap-4">
+    <div className="h-screen fixed top-0 bottom-0 left-0 right-0 flex items-center justify-center gap-4 bg-base-100 dark:bg-base-300 transition-all duration-300">
       <div className="flex flex-col gap-4 md:flex-row items-center justify-center md:gap-16">
         <div className="">
           <img
@@ -70,82 +73,84 @@ const SignUpPage = () => {
                 ? "/avatars/virvo-responsive/icons8-chat-256.svg"
                 : "/avatars/virvo-responsive/icons8-chat-128.svg"
             }`}
-            alt=""
+            alt="Chat Icon"
           />
         </div>
         <div className="flex flex-col">
-          <h2 className="text-white text-4xl md:text-5xl font-bold mb-4">
+          <h2 className="text-base-content text-4xl md:text-5xl font-bold mb-4">
             Join Us Today
           </h2>
           <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
             <div className="relative">
-              <MdMailOutline className="absolute top-4 left-4" />
+              <MdMailOutline className="absolute top-4 left-4 text-base-content" />
               <input
-                defaultValue={formData.email}
+                value={formData.email}
                 type="email"
                 placeholder="Email"
-                className="input input-bordered w-full max-w-xs px-10"
+                className="input input-bordered w-full max-w-xs pl-10"
                 onChange={(e) =>
                   handleFormDatachange({ email: e.target.value })
                 }
               />
             </div>
             <div className="relative">
-              <FaUser className="absolute top-4 left-4" />
+              <FaUser className="absolute top-4 left-4 text-base-content" />
               <input
-                defaultValue={formData.username}
+                value={formData.username}
                 type="text"
                 placeholder="Username"
-                className="input input-bordered w-full max-w-xs px-10"
+                className="input input-bordered w-full max-w-xs pl-10"
                 onChange={(e) =>
                   handleFormDatachange({ username: e.target.value })
                 }
               />
             </div>
             <div className="relative">
+              <MdDriveFileRenameOutline className="absolute top-4 left-4 text-base-content" />
               <input
-                defaultValue={formData.fullName}
+                value={formData.fullName}
                 type="text"
                 placeholder="Full Name"
-                className="input input-bordered w-full max-w-xs px-10"
+                className="input input-bordered w-full max-w-xs pl-10"
                 onChange={(e) =>
                   handleFormDatachange({ fullName: e.target.value })
                 }
               />
-              <MdDriveFileRenameOutline className="absolute top-4 left-4" />
             </div>
             <div className="relative">
+              <FaKey className="absolute top-4 left-4 text-base-content" />
               <input
-                defaultValue={formData.password}
-                type={showPassowrd ? "text" : "password"}
+                value={formData.password}
+                type={showPassword ? "text" : "password"}
                 placeholder="Password"
-                className="input input-bordered w-full max-w-xs px-10"
+                className="input input-bordered w-full max-w-xs pl-10"
                 onChange={(e) =>
                   handleFormDatachange({ password: e.target.value })
                 }
               />
-              <FaKey className="absolute top-4 left-4" />
-              {showPassowrd ? (
+              {showPassword ? (
                 <FaEyeSlash
-                  className="absolute top-4 right-4 cursor-pointer"
+                  className="absolute top-4 right-4 cursor-pointer text-base-content"
                   onClick={() => setShowPassword(false)}
                 />
               ) : (
                 <FaEye
-                  className="absolute top-4 right-4 cursor-pointer"
+                  className="absolute top-4 right-4 cursor-pointer text-base-content"
                   onClick={() => setShowPassword(true)}
                 />
               )}
             </div>
-            <button type="submit" className="btn btn-primary">
+            <button type="submit" className="btn btn-primary w-full">
               {isPending ? "Loading ..." : "Sign Up"}
             </button>
             {isError && (
-              <div className="my-2 text-red-500">{error.message}</div>
+              <div className="my-2 text-error">{error.message}</div>
             )}
           </form>
-          <p className="my-2.5">already have an account ?</p>
-          <Link to={"/login"} className="btn btn-outline btn-primary">
+          <p className="my-2.5 text-base-content">
+            Already have an account?
+          </p>
+          <Link to="/login" className="btn btn-outline btn-primary w-full">
             Sign In
           </Link>
         </div>

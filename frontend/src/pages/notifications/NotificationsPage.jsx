@@ -24,7 +24,6 @@ const NotificationsPage = () => {
     queryKey: ["notifications"],
     queryFn: fetchMyNotifications,
   });
-  
 
   const { mutate: deleteNotifications } = useMutation({
     mutationKey: ["deleteNotifications"],
@@ -55,92 +54,78 @@ const NotificationsPage = () => {
     switch (notification.type) {
       case "like":
         return (
-          <>
+          <div className="flex items-center gap-2">
             <FaHeart className="text-red-500" />
-            <p className="text-gray-800 dark:text-white">
-              <Link to={`/profiles/${notification.from.username}`}>
+            <p className="text-base-content">
+              <Link to={`/profiles/${notification.from.username}`} className="underline">
                 @{notification.from.username}
               </Link>{" "}
-              {notification.type}ed your post
+              liked your post
             </p>
-          </>
+          </div>
         );
       case "comment":
-        return  (
-          <>
-          <FaComment className="text-blue-500" />
-           <p className="text-gray-800 dark:text-white">
-              <Link to={`/profiles/${notification.from.username}`}>
+        return (
+          <div className="flex items-center gap-2">
+            <FaComment className="text-blue-500" />
+            <p className="text-base-content">
+              <Link to={`/profiles/${notification.from.username}`} className="underline">
                 @{notification.from.username}
               </Link>{" "}
-              {notification.type}ed on your post
+              commented on your post
             </p>
-          </>
-        ) ;
+          </div>
+        );
       case "follow":
         return (
-          <>
+          <div className="flex items-center gap-2">
             <FaUserPlus className="text-green-500" />
-            <p className="text-gray-800 dark:text-white">
-              <Link to={`/profiles/${notification.from.username}`}>
+            <p className="text-base-content">
+              <Link to={`/profiles/${notification.from.username}`} className="underline">
                 @{notification.from.username}
               </Link>{" "}
-              {notification.type}ed you
+              followed you
             </p>
-          </>
-        );
-      case "followed":
-        return (
-          <>
-            <FaUserPlus className="text-green-500" />
-            <p className="text-gray-800 dark:text-white">
-              you followed{" "}
-              <Link to={`/profiles/${notification.from.username}`}>
-                @{notification.from.username}
-              </Link>
-            </p>
-          </>
+          </div>
         );
       case "unfollow":
         return (
-          <>
+          <div className="flex items-center gap-2">
             <FaUserMinus className="text-yellow-500" />
-            <p className="text-gray-800 dark:text-white">
-              you unfollowed{" "}
-              <Link to={`/profiles/${notification.from.username}`}>
+            <p className="text-base-content">
+              <Link to={`/profiles/${notification.from.username}`} className="underline">
                 @{notification.from.username}
-              </Link>
+              </Link>{" "}
+              unfollowed you
             </p>
-          </>
-        );
-      case "unfollowed":
-        return (
-          <>
-            <FaUserMinus className="text-yellow-500" />
-            <p className="text-gray-800 dark:text-white">
-              you unfollowed{" "}
-              <Link to={`/profiles/${notification.from.username}`}>
-                @{notification.from.username}
-              </Link>
-            </p>
-          </>
+          </div>
         );
       default:
-        return <FaBell className="text-gray-500" />;
+        return (
+          <div className="flex items-center gap-2">
+            <FaBell className="text-gray-500" />
+            <p className="text-base-content">
+              <Link to={`/profiles/${notification.from.username}`} className="underline">
+                @{notification.from.username}
+              </Link>{" "}
+              sent you a notification
+            </p>
+          </div>
+        );
     }
   };
 
   return (
-    <div className="p-4 lg:p-8">
+    <div className="p-4 lg:p-8 bg-base-100 h-screen mx-4 dark:bg-base-300 transition-all duration-300">
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-2xl font-bold text-gray-800 dark:text-white">
+        <h2 className="text-2xl font-bold text-base-content">
           Notifications
         </h2>
         <div className="dropdown dropdown-bottom dropdown-end">
           <div
             tabIndex={0}
             role="button"
-            className="btn m-1 bg-transparent border-none text-red-500"
+            className="btn m-1 bg-transparent border-none text-error"
           >
             <FaTrashAlt />
           </div>
@@ -171,7 +156,7 @@ const NotificationsPage = () => {
           myNotifications.map((notification) => (
             <div
               key={notification._id}
-              className="bg-white dark:bg-slate-800 rounded-lg shadow-md p-4 mb-4 flex items-center gap-4 transition-all duration-300"
+              className="bg-base-100 dark:bg-base-300 rounded-lg shadow-md p-4 mb-4 flex items-center gap-4 transition-all duration-300"
             >
               {getNotificationIcon(notification)}
             </div>

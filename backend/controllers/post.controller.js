@@ -1,18 +1,30 @@
-import { isValidObjectId } from "mongoose";
+import mongoose, { isValidObjectId } from "mongoose";
 import postsModel from "../models/post.model.js";
 import usersModel from '../models/user.model.js';
 import notificationModel from '../models/notification.model.js';
 import {writeFile} from 'fs/promises'
 import path from "path";
 
-export const getPosts = async (req, res)=>{
-    try {
-        const posts = await postsModel.find({}).sort({_id : -1}).populate('user' , 'username profile -_id').populate('comments.user' , 'username profile -_id')  // asc sort
-        res.status(200).json({posts})
-    } catch (error) {
-        return res.status(500).json({message : 'error getting posts' , error : error.message})
-    }
+export const getPosts = async (req, res) => {
+  try {
+    const cursor = req.query.cursor ? new mongoose.Types.ObjectId(req.query.cursor) : null;
+    const limit = 3;  // Define the number of posts to fetch per request
+
+    let query = cursor ? { _id: { $lt: cursor } } : {};
+    const posts = await postsModel.find(query)
+      .sort({ _id: -1 })
+      .limit(limit)
+      .populate('user', 'username profile -_id')
+      .populate('comments.user', 'username profile -_id');
+
+    const nextCursor = posts.length === limit ? posts[posts.length - 1]._id : null;
+
+    res.status(200).json({ posts, nextCursor });
+  } catch (error) {
+    return res.status(500).json({ message: 'error getting posts', error: error.message });
+  }
 }
+ 
 
 export const createPost = async (req, res) => {
   try {
