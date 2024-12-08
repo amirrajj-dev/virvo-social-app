@@ -122,134 +122,138 @@ const ProfilePage = () => {
       ) : (
         <>
           <div className="relative">
-            <img
-              src={
-                coverImg && user && !userCover
-                  ? coverImg
-                  : `http://localhost:5000/coverImgs/${userCover}`
-              }
-              alt="Cover"
-              className="w-full h-48 object-cover rounded-lg"
-            />
-            <input
-              type="file"
-              accept="image/*"
-              id="cover-upload"
-              hidden
-              onChange={handleCoverImgChange}
-            />
-            {location.pathname === `/profiles/${user?.username}` && (
-              <label
-                htmlFor="cover-upload"
-                className="absolute top-2 right-2 bg-gray-700 text-white p-2 rounded-full cursor-pointer"
-              >
-                <FaCamera />
-              </label>
-            )}
-          </div>
-          <div className="relative w-fit">
-            <img
-              src={
-                profileImg && user && !userProfile
-                  ? profileImg
-                  : `http://localhost:5000/profiles/${userProfile}`
-              }
-              alt="User Avatar"
-              className="w-24 h-24 rounded-full object-cover"
-            />
-            <input
-              type="file"
-              accept="image/*"
-              id="profile-upload"
-              hidden
-              onChange={handleProfileImgChange}
-            />
-            {location.pathname === `/profiles/${me?.username}` && (
-              <label
-                htmlFor="profile-upload"
-                className="absolute bottom-0 right-0 bg-gray-700 text-white p-2 rounded-full cursor-pointer"
-              >
-                <FaCamera />
-              </label>
-            )}
-          </div>
-          <div className="flex items-center gap-4 mt-4">
-            <div>
-              <h2 className="text-2xl font-bold text-gray-800 dark:text-white text-nowrap">
-                {user?.fullName}
-              </h2>
-              <span className="text-gray-500 dark:text-gray-400">
-                @{user?.username}
-              </span>
-            </div>
-            <div className="flex gap-2.5 w-full justify-end">
-              {location.pathname === `/profiles/${me?.username}` ? (
-                <button
-                  onClick={openEditModal}
-                  className="btn btn-primary btn-xs text-white"
-                >
-                  Edit Profile
-                </button>
-              ) : (
-                <button
-                  className="btn btn-primary btn-sm text-white"
-                  onClick={() => {
-                    followUnfollow(user._id);
-                  }}
-                >
-                  {me.following.includes(user?._id) ? "unfollow" : "follow"}
-                </button>
-              )}
-              {isProfileImgChanged && (
-                <button
-                  onClick={handleProfileImgUpdate}
-                  className="btn btn-primary btn-xs text-white"
-                >
-                  Update Profile
-                </button>
-              )}
-              {isCoverImgChanged && (
-                <button
-                  onClick={handleCoverImgUpdate}
-                  className="btn btn-primary btn-xs text-white"
-                >
-                  Update Cover
-                </button>
-              )}
-              {(isProfileImgChanged || isCoverImgChanged) && (
-                <button
-                  onClick={() => {
-                    console.log(user)
-                    setUserProfile(user.profile);
-                    setIsProfileImgChanged(false);
-                    setIsCoverImgChanged(false);
-                    setUserCover(user.coverImg);
-                  }}
-                  className="btn btn-primary btn-xs text-white"
-                >
-                  cancel changes
-                </button>
-              )}
-            </div>
-          </div>
-          <div className="mt-4">
-            <p className="text-gray-800 dark:text-white">{user?.bio}</p>
-          </div>
-          <div className="flex items-center gap-4 mt-4">
-            <div className="flex items-center gap-2">
-              <FaUserFriends className="text-gray-800 dark:text-white" />
-              <span className="text-gray-800 dark:text-white">
-                {user?.following?.length} Following
-              </span>
-            </div>
-            <div className="flex items-center gap-2">
-              <FaUserPlus className="text-gray-800 dark:text-white" />
-              <span className="text-gray-800 dark:text-white">
-                {user?.followers?.length} Followers
-              </span>
-            </div>
-          </div>
-          <span className="text-sm mt-1 text-white">🟦Member Since {memberSince}</span>
+  <img
+    src={
+      coverImg && user && !userCover
+        ? coverImg
+        : `http://localhost:5000/coverImgs/${userCover}`
+    }
+    alt="Cover"
+    className="w-full h-48 object-cover rounded-lg"
+  />
+  <input
+    type="file"
+    accept="image/*"
+    id="cover-upload"
+    hidden
+    onChange={handleCoverImgChange}
+  />
+  {location.pathname === `/profiles/${user?.username}` && (
+    <label
+      htmlFor="cover-upload"
+      className="absolute top-2 right-2 bg-base-200 dark:bg-base-700 text-base-content p-2 rounded-full cursor-pointer"
+    >
+      <FaCamera />
+    </label>
+  )}
+</div>
+
+<div className="relative w-fit">
+  <img
+    src={
+      profileImg && user && !userProfile
+        ? profileImg
+        : `http://localhost:5000/profiles/${userProfile}`
+    }
+    alt="User Avatar"
+    className="w-24 h-24 rounded-full object-cover"
+  />
+  <input
+    type="file"
+    accept="image/*"
+    id="profile-upload"
+    hidden
+    onChange={handleProfileImgChange}
+  />
+  {location.pathname === `/profiles/${me?.username}` && (
+    <label
+      htmlFor="profile-upload"
+      className="absolute bottom-0 right-0 bg-base-200 dark:bg-base-700 text-base-content p-2 rounded-full cursor-pointer"
+    >
+      <FaCamera />
+    </label>
+  )}
+</div>
+
+<div className="flex items-center gap-4 mt-4">
+  <div>
+    <h2 className="text-2xl font-bold text-base-content text-nowrap">
+      {user?.fullName}
+    </h2>
+    <span className="text-base-content">
+      @{user?.username}
+    </span>
+  </div>
+  <div className="flex gap-2.5 w-full justify-end">
+    {location.pathname === `/profiles/${me?.username}` ? (
+      <button
+        onClick={openEditModal}
+        className="btn btn-primary btn-xs"
+      >
+        Edit Profile
+      </button>
+    ) : (
+      <button
+        className="btn btn-primary btn-sm"
+        onClick={() => {
+          followUnfollow(user._id);
+        }}
+      >
+        {me.following.includes(user?._id) ? "unfollow" : "follow"}
+      </button>
+    )}
+    {isProfileImgChanged && (
+      <button
+        onClick={handleProfileImgUpdate}
+        className="btn btn-primary btn-xs"
+      >
+        Update Profile
+      </button>
+    )}
+    {isCoverImgChanged && (
+      <button
+        onClick={handleCoverImgUpdate}
+        className="btn btn-primary btn-xs"
+      >
+        Update Cover
+      </button>
+    )}
+    {(isProfileImgChanged || isCoverImgChanged) && (
+      <button
+        onClick={() => {
+          console.log(user)
+          setUserProfile(user.profile);
+          setIsProfileImgChanged(false);
+          setIsCoverImgChanged(false);
+          setUserCover(user.coverImg);
+        }}
+        className="btn btn-primary btn-xs"
+      >
+        cancel changes
+      </button>
+    )}
+  </div>
+</div>
+
+<div className="mt-4">
+  <p className="text-base-content">{user?.bio}</p>
+</div>
+<div className="flex items-center gap-4 mt-4">
+  <div className="flex items-center gap-2">
+    <FaUserFriends className="text-base-content" />
+    <span className="text-base-content">
+      {user?.following?.length} Following
+    </span>
+  </div>
+  <div className="flex items-center gap-2">
+    <FaUserPlus className="text-base-content" />
+    <span className="text-base-content">
+      {user?.followers?.length} Followers
+    </span>
+  </div>
+</div>
+<span className="text-sm mt-1 text-base-content">🟦Member Since {memberSince}</span>
+
         </>
       )}
       <div className="border-b border-gray-300 dark:border-gray-700 mt-4">
