@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { FaTrashAlt, FaHeart, FaRegComment, FaRegHeart, FaSave } from 'react-icons/fa';
-import { Link, useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useGetMe } from '../../hooks/useGetMe';
 import CommentModal from '../modals/CommentModal';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -9,7 +9,6 @@ import moment from 'moment';
 
 const Post = ({ text, _id, img, user, comments, likes, createdAt, tabValue, deletePost, likePost }) => {
   const { user: me } = useGetMe();
-  const location = useLocation();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [postComments, setPostcomments] = useState(comments);
   const [displayTime, setDisplayTime] = useState(moment(createdAt).fromNow());
@@ -68,7 +67,7 @@ const Post = ({ text, _id, img, user, comments, likes, createdAt, tabValue, dele
                 <span className="text-sm text-base-content ml-2">{displayTime}</span>
               </div>
             </Link>
-            {(tabValue === 'for you' || location.pathname === `/profiles/${me?.username}`) && (
+            {(user.username === me.username) && (
               <button className="text-error hover:text-error-content transition-all duration-300" onClick={() => deletePost(_id)}>
                 <FaTrashAlt />
               </button>

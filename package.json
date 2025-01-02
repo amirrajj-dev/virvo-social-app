@@ -4,8 +4,9 @@
   "main": "backend/app.js",
   "type": "module",
   "scripts": {
-    "dev": "nodemon backend/app.js",
-    "start": "node backend/app.js"
+    "dev": "cross-env NODE_ENV=development nodemon backend/app.js",
+    "build": "npm i && npm i --prefix frontend && npm run build --prefix frontend",
+    "start": "cross-env NODE_ENV=production node backend/app.js"
   },
   "keywords": [],
   "author": "amir",
@@ -15,6 +16,7 @@
     "bcryptjs": "^2.4.3",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
+    "cross-env": "^7.0.3",
     "dotenv": "^16.4.5",
     "express": "^4.21.1",
     "jsonwebtoken": "^9.0.2",

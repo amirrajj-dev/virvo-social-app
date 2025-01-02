@@ -6,6 +6,7 @@ import connectToDb from "./db/connectToDb.js";
 import cookieParser from "cookie-parser";
 import postRoutes from "./routes/post.route.js";
 import notificationRoutes from "./routes/notification.route.js";
+import path from 'path'
 
 const app = express();
 dotenv.config();
@@ -22,9 +23,14 @@ app.use("/api/users", userRoutes);
 app.use("/api/posts", postRoutes);
 app.use("/api/notifications", notificationRoutes);
 
-app.get("/", (req, res) => {
-  res.send("Hello World");
-});
+const __dirname = path.resolve()
+
+if (process.env.NODE_ENV === 'production') {
+    app.use(express.static(path.join(__dirname, 'frontend', 'dist')))
+    app.get('*', (req, res) => {
+        res.sendFile(path.resolve(__dirname, 'frontend', 'dist', 'index.html'))
+    })
+}
 
 app.listen(process.env.PORT, async () => {
   await connectToDb();
