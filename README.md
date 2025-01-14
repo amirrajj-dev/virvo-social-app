@@ -7,8 +7,7 @@ Virvo Social App is a modern, fully-responsive social networking platform built 
 1. [📖 Project Overview](#-project-overview)
 2. [⚙️ Features](#-features)
 3. [💻 Tech Stack](#-tech-stack)
-4. [📁 Project Structure](#-project-structure)
-5. [🚀 Getting Started](#-getting-started)
+4. [🚀 Getting Started](#-getting-started)
 
 ## 📖 Project Overview
 
@@ -51,53 +50,6 @@ Virvo Social App is a full-stack social networking platform where users can crea
 - ![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=flat&logo=typescript&logoColor=white) **TypeScript**: A typed superset of JavaScript that compiles to plain JavaScript.
 - ![ESLint](https://img.shields.io/badge/ESLint-4B3263?style=flat&logo=eslint&logoColor=white) **ESLint**: A tool for identifying and reporting on patterns found in ECMAScript/JavaScript code.
 - ![PostCSS](https://img.shields.io/badge/PostCSS-DD3A0A?style=flat&logo=postcss&logoColor=white) **PostCSS**: A tool for transforming CSS with JavaScript plugins.
-
-## 📁 Project Structure
-
-Here's a high-level overview of the project structure:
-
-📦virvo-social-app
- ┣ 📂backend
- ┃ ┣ 📂controllers
- ┃ ┃ ┣ 📜auth.controller.js
- ┃ ┃ ┣ 📜user.controller.js
- ┃ ┃ ┗ 📜post.controller.js
- ┃ ┣ 📂db
- ┃ ┃ ┗ 📜connectToDb.js
- ┃ ┣ 📂middlewares
- ┃ ┃ ┗ 📜protectRoute.js
- ┃ ┣ 📂models
- ┃ ┃ ┣ 📜user.model.js
- ┃ ┃ ┣ 📜post.model.js
- ┃ ┃ ┗ 📜notification.model.js
- ┃ ┣ 📂routes
- ┃ ┃ ┣ 📜auth.route.js
- ┃ ┃ ┣ 📜user.route.js
- ┃ ┃ ┗ 📜post.route.js
- ┃ ┗ 📜app.js
- ┣ 📂frontend
- ┃ ┣ 📂components
- ┃ ┃ ┣ 📜Sidebar.jsx
- ┃ ┃ ┣ 📜SidebarPanel.jsx
- ┃ ┃ ┗ 📜Toaster.jsx
- ┃ ┣ 📂hooks
- ┃ ┃ ┣ 📜useDelete.js
- ┃ ┃ ┣ 📜useFollow.js
- ┃ ┃ ┗ 📜useGetMe.js
- ┃ ┣ 📂pages
- ┃ ┃ ┣ 📂auth
- ┃ ┃ ┃ ┣ 📜LoginPage.jsx
- ┃ ┃ ┃ ┗ 📜SignUpPage.jsx
- ┃ ┃ ┣ 📂home
- ┃ ┃ ┃ ┗ 📜HomePage.jsx
- ┃ ┃ ┣ 📂notifications
- ┃ ┃ ┃ ┗ 📜NotificationsPage.jsx
- ┃ ┃ ┣ 📂profile
- ┃ ┃ ┃ ┗ 📜ProfilePage.jsx
- ┃ ┗ 📜App.jsx
- ┣ 📜.env
- ┣ 📜package.json
- ┗ 📜README.md
 
 ## 🚀 Getting Started
 
