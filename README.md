@@ -93,7 +93,7 @@ npm run build
 npm run start
 ```
 
-and thats it ! now go to the localhost:5000 to see the project⚡.
+and thats it ! now go to the http://localhost:5000 to see the project⚡.
 
 ## The End 🏁
 
