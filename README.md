@@ -59,7 +59,7 @@ Node Js🔰
 
 Mongo Db🍏
 
-Mongo Db Compass (not required just for better experience)
+🏡Mongo Db Compass (not required just for better experience)
 
 
 1.📋 Clone the repository:
